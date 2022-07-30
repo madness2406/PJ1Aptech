@@ -25,7 +25,7 @@ public class DBConnection {
          }
          return null;
      }
-       public ResultSet getData(String query)
+       public ResultSet GetData(String query)
        {
            Connection con =getConnection();
            if(con== null )
@@ -47,7 +47,7 @@ public class DBConnection {
            }
     
         }
-       public boolean updateData(String query)
+       public boolean UpdateData(String query)
        {
            Connection con =getConnection();
            if(con==null)
