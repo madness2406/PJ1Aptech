@@ -75,7 +75,7 @@ public class MainMenu extends javax.swing.JFrame {
         jMenu2.setText("Chức năng");
 
         khachhang.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        khachhang.setText("Thông tin khách hàng");
+        khachhang.setText("Thông tin nhân viên");
         khachhang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 khachhangActionPerformed(evt);
@@ -93,7 +93,7 @@ public class MainMenu extends javax.swing.JFrame {
         jMenu2.add(taohoadon);
 
         Tinhtien.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_DOWN_MASK));
-        Tinhtien.setText("Thông tin Hàng Hoá");
+        Tinhtien.setText("Thông tin mượn sách");
         Tinhtien.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TinhtienActionPerformed(evt);
@@ -133,9 +133,6 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void TinhtienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TinhtienActionPerformed
 
-        Book hh = new Book();
-        DesktopPane1.add(hh);
-        hh.setVisible(true);
     }//GEN-LAST:event_TinhtienActionPerformed
 
     private void mniExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniExitActionPerformed
@@ -144,14 +141,14 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_mniExitActionPerformed
 
     private void createBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBookActionPerformed
-        Booking cthd = null;
+        Book bookForm = null;
         try {
-            cthd = new Booking();
+            bookForm = new Book();
         } catch (SQLException ex) {
             Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
-        DesktopPane1.add(cthd);
-        cthd.setVisible(true);
+        DesktopPane1.add(bookForm);
+        bookForm.setVisible(true);
 
 
     }//GEN-LAST:event_createBookActionPerformed
