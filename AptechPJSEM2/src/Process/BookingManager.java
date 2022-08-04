@@ -7,6 +7,7 @@ package Process;
 import Database.DBConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -15,39 +16,36 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Admin
  */
-public class BookManager {
+public class BookingManager {
 
-    public static boolean Add(String name, String author, String categoryId,
-            String publishYear, String quantity, String price, String note) {
+    public static boolean Add(String renderId, String lenderId, String day,
+            String status, String note) {
         DBConnection dbconn = new DBConnection();
         String sql;
         if (!note.equals("")) {
-            sql = "Insert into book (Name,Author,CategoryId,PublishYear,Quantity,Price,Note)"
-                    + " values (N'" + name + "',N'" + author + "',N'"
-                    + categoryId + "',N'" + publishYear + "',N'" + quantity + "',N'"
-                    + price + "',N'" + note + "')";
+            sql = "Insert into booking (RenderId,LenderId,ExpiredDay,Status,Note)"
+                    + " values (N'" + renderId + "',N'" + lenderId + "',N'"
+                    + day + "',N'" + status + "',N'" + note + "')";
         }
         else{
-            sql = "Insert into book (Name,Author,CategoryId,PublishYear,Quantity,Price)"
-                    + " values (N'" + name + "',N'" + author + "',N'"
-                    + categoryId + "',N'" + publishYear + "',N'" + quantity + "',N'"
-                    + price + "')";
+            sql = "Insert into booking (RenderId,LenderId,ExpiredDay,Status)"
+                    + " values (N'" + renderId + "',N'" + lenderId + "',N'"
+                    + day + "',N'" + status + "')";
         }
         return dbconn.UpdateData(sql);
 
     }
 
-    public static boolean Edit(String name, String author, String categoryId,
-            String publishYear, String quantity, String price, String note) {
+    public static boolean Edit(String renderId, String lenderId, String day,
+            String status, String note) {
         DBConnection dbConn = new DBConnection();
-        String sql = "Update book Set Name = N'" + name + "', Author = N'" + author + "', CategoryId = N'"
-                + categoryId + "', Publishyear = N'" + publishYear + "', Quantity = N'" + quantity
-                + "', Price = N'" + price + "', Note = N'" + note + ")";
+        String sql = "Update booking Set RenderId = N'" + renderId + "', LenderId = N'" + lenderId + "', ExpiredDay = N'"
+                + day + "', Status = N'" + status + "', Note = N'" + note + ")";
         return dbConn.UpdateData(sql);
     }
 
-    public static boolean Delete(String bookId) {
-        String sql = "Delete From book Where BookId ='" + bookId + "'";
+    public static boolean Delete(String bookingId) {
+        String sql = "Delete From booking Where BookingId ='" + bookingId + "'";
         DBConnection dbConn = new DBConnection();
         return dbConn.UpdateData(sql);
     }
@@ -57,7 +55,7 @@ public class BookManager {
             DefaultTableModel dfTableModel = (DefaultTableModel) jTable.getModel();
             dfTableModel.setRowCount(0);
             DBConnection db = new DBConnection();
-            ResultSet rs = db.GetData("Select * From book");
+            ResultSet rs = db.GetData("Select * From booking");
             String[] row = new String[8];
             while (rs.next()) {
                 row[0] = rs.getString(1);
@@ -76,14 +74,12 @@ public class BookManager {
             return false;
         }
     }
-    public static int Count(String tableName, String columnName1,String coloumnName2, String value1, String value2) {
+    public static int Count(String tableName, String columnName, String value) {
         String sql;
-        if (value1.length() == 0 && columnName1.length() == 0 &&
-            value2.length() == 0 && coloumnName2.length() == 0) {
+        if (value.length() == 0 && columnName.length() == 0) {
             sql = "Select COUNT(*) from " + tableName;
         } else {
-            sql = "Select COUNT(*) from " + tableName + " Where " + columnName1 + " = N'" + value1 + "', "
-                    + coloumnName2 + " = N'" + value2 + "'";
+            sql = "Select COUNT(*) from " + tableName + " Where " + columnName + " = N'" + value + "'";
         }
 
         DBConnection dbConn = new DBConnection();
@@ -100,16 +96,27 @@ public class BookManager {
         return -1;
     }
 
-    public static DefaultComboBoxModel GetCategoryId() throws SQLException {
-        DefaultComboBoxModel dm = new DefaultComboBoxModel();
+    public static Double TotalMoney(String bookingId) {
+        Double a = 0.0;
+        String qr = "Select SUM(bkd.Quantity * b.Price) From booking bk"
+                 + " INNER JOIN bookingdetail bkd ON bk.BookingId = bkd.BookBookingId"
+                 + " INNER JOIN book b ON bkd.BookId = b.BookId"
+                 + " Where bk.BookingId = '" + bookingId + "'";
         DBConnection dbConn = new DBConnection();
-
-        String qr = "Select CategoryId from category";
         ResultSet rs = dbConn.GetData(qr);
-        while (rs.next()) {
-            String name = rs.getString(1);
-            dm.addElement(name);
+        try {
+            if (rs.next()) {
+                a = Double.parseDouble(rs.getString(1));
+                return a;
+            }
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            return a;
         }
-        return dm;
+        return a;
+    }
+    
+    public static Double TotalDeposits(Double money, int interest){
+        return money*interest/100;
     }
 }

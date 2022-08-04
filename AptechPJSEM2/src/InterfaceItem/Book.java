@@ -46,8 +46,8 @@ public class Book extends javax.swing.JInternalFrame {
         if (row >= 0) {
             String name = (String) dfTableModel.getValueAt(row, 1);
             String author = (String) dfTableModel.getValueAt(row, 2);
-            String publishYear = (String) dfTableModel.getValueAt(row, 3);
-            String categoryId = (String) dfTableModel.getValueAt(row, 4);
+            String categoryId = (String) dfTableModel.getValueAt(row, 3);
+            String publishYear = (String) dfTableModel.getValueAt(row, 4);
             String quantity = (String) dfTableModel.getValueAt(row, 5);
             String price = (String) dfTableModel.getValueAt(row, 6);
             String note = (String) dfTableModel.getValueAt(row, 7);
@@ -57,7 +57,7 @@ public class Book extends javax.swing.JInternalFrame {
             cbCategoryId.setSelectedItem(categoryId.trim());
             txtQuantity.setText(quantity.trim());
             txtPrice.setText(price.trim());
-            txtNote.setText(note.trim());
+            txtNote.setText(note);
         } else {
             txtName.setText("");
             txtAuthor.setText("");
@@ -93,6 +93,7 @@ public class Book extends javax.swing.JInternalFrame {
                 txtPrice.setEnabled(trangThai);
                 txtNote.setEnabled(trangThai);
                 txtPublishYear.setEnabled(trangThai);
+                cbCategoryId.setEnabled(trangThai);
                 txtName.requestFocus();
                 btnSave.setEnabled(trangThai);
                 btnEdit.setEnabled(!trangThai);
@@ -113,6 +114,7 @@ public class Book extends javax.swing.JInternalFrame {
                 txtAuthor.setEnabled(trangThai);
                 txtPrice.setEnabled(trangThai);
                 txtNote.setEnabled(trangThai);
+                cbCategoryId.setEnabled(trangThai);
                 txtPublishYear.setEnabled(trangThai);
                 txtName.requestFocus();
                 btnSave.setEnabled(trangThai);
@@ -128,6 +130,7 @@ public class Book extends javax.swing.JInternalFrame {
                 txtAuthor.setEnabled(trangThai);
                 txtPrice.setEnabled(trangThai);
                 txtNote.setEnabled(trangThai);
+                cbCategoryId.setEnabled(trangThai);
                 txtPublishYear.setEnabled(trangThai);
                 btnSave.setEnabled(trangThai);
                 btnAdd.setEnabled(true);
@@ -235,7 +238,15 @@ public class Book extends javax.swing.JInternalFrame {
             new String [] {
                 "Mã", "Tên", "Tác giả", "Năm xuất bản", "Mã thể loại", "Số lượng", "Đơn giá", "Ghi chú"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tbBook);
 
         txtName.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
@@ -354,6 +365,7 @@ public class Book extends javax.swing.JInternalFrame {
         jLabel8.setText("Mã thể loại");
 
         cbCategoryId.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbCategoryId.setEnabled(false);
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel9.setText("Năm xuất bản");
@@ -387,16 +399,11 @@ public class Book extends javax.swing.JInternalFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(137, 137, 137)
-                                    .addComponent(jLabel10)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
                                     .addGap(121, 121, 121)
                                     .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(29, 29, 29)
                                     .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addContainerGap()
@@ -434,6 +441,12 @@ public class Book extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(137, 137, 137)
+                .addComponent(jLabel10)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -583,11 +596,11 @@ public class Book extends javax.swing.JInternalFrame {
             if (CheckInput1() == false) {
                 return;
             }
-//            if (BookManager.Count("book", "Name", "Author", name, author) > 0) {
-//                txtName.requestFocus();
-//                JOptionPane.showMessageDialog(null, "Mã hàng hoá bạn nhập đã tồn tại trong csdl", "Trùng mã", JOptionPane.WARNING_MESSAGE);
-//                return;
-//            }
+            if (BookManager.Count("book", "Name", "Author", name, author) > 0) {
+                txtName.requestFocus();
+                JOptionPane.showMessageDialog(null, "Mã hàng hoá bạn nhập đã tồn tại trong csdl", "Trùng mã", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             if (BookManager.Add(name, author, categoryId, publishYear, quantity, price, note)) {
                 btnAdd.requestFocus();
                 SwitchMode(ChucNang.NONE);

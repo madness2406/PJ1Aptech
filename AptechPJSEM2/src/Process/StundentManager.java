@@ -15,13 +15,13 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Admin
  */
-public class BookManager {
+public class StundentManager {
 
     public static boolean Add(String name, String author, String categoryId,
             String publishYear, String quantity, String price, String note) {
         DBConnection dbconn = new DBConnection();
         String sql;
-        if (!note.equals("")) {
+        if (note.equals("")) {
             sql = "Insert into book (Name,Author,CategoryId,PublishYear,Quantity,Price,Note)"
                     + " values (N'" + name + "',N'" + author + "',N'"
                     + categoryId + "',N'" + publishYear + "',N'" + quantity + "',N'"
@@ -63,8 +63,8 @@ public class BookManager {
                 row[0] = rs.getString(1);
                 row[1] = rs.getString(2);
                 row[2] = rs.getString(3);
-                row[3] = rs.getString(5);
-                row[4] = rs.getString(4);
+                row[3] = rs.getString(4);
+                row[4] = rs.getString(5);
                 row[5] = rs.getString(6);
                 row[6] = rs.getString(7);
                 row[7] = rs.getString(9);

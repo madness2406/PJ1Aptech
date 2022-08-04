@@ -11,6 +11,7 @@ import InterfaceItem.Employee;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  *
@@ -40,24 +41,27 @@ public class MainMenu extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         mniExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        khachhang = new javax.swing.JMenuItem();
-        taohoadon = new javax.swing.JMenuItem();
-        Tinhtien = new javax.swing.JMenuItem();
+        Customer = new javax.swing.JMenuItem();
+        Student = new javax.swing.JMenuItem();
+        Book = new javax.swing.JMenuItem();
+        Booking = new javax.swing.JMenuItem();
 
         jMenuItem3.setText("jMenuItem3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(0, 0));
 
+        DesktopPane1.setMaximumSize(getMaximumSize());
+
         javax.swing.GroupLayout DesktopPane1Layout = new javax.swing.GroupLayout(DesktopPane1);
         DesktopPane1.setLayout(DesktopPane1Layout);
         DesktopPane1Layout.setHorizontalGroup(
             DesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 615, Short.MAX_VALUE)
+            .addGap(0, 799, Short.MAX_VALUE)
         );
         DesktopPane1Layout.setVerticalGroup(
             DesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 558, Short.MAX_VALUE)
+            .addGap(0, 596, Short.MAX_VALUE)
         );
 
         jMenu1.setText("Hệ thống");
@@ -74,32 +78,41 @@ public class MainMenu extends javax.swing.JFrame {
 
         jMenu2.setText("Chức năng");
 
-        khachhang.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        khachhang.setText("Thông tin nhân viên");
-        khachhang.addActionListener(new java.awt.event.ActionListener() {
+        Customer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        Customer.setText("Thông tin nhân viên");
+        Customer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                khachhangActionPerformed(evt);
+                CustomerActionPerformed(evt);
             }
         });
-        jMenu2.add(khachhang);
+        jMenu2.add(Customer);
 
-        taohoadon.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        taohoadon.setText("Nhập sách");
-        taohoadon.addActionListener(new java.awt.event.ActionListener() {
+        Student.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        Student.setText("Thông tin sinh viên");
+        Student.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StudentActionPerformed(evt);
+            }
+        });
+        jMenu2.add(Student);
+
+        Book.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        Book.setText("Nhập sách");
+        Book.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 createBookActionPerformed(evt);
             }
         });
-        jMenu2.add(taohoadon);
+        jMenu2.add(Book);
 
-        Tinhtien.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_DOWN_MASK));
-        Tinhtien.setText("Thông tin mượn sách");
-        Tinhtien.addActionListener(new java.awt.event.ActionListener() {
+        Booking.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_DOWN_MASK));
+        Booking.setText("Mượn - Trả sách");
+        Booking.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TinhtienActionPerformed(evt);
+                BookingActionPerformed(evt);
             }
         });
-        jMenu2.add(Tinhtien);
+        jMenu2.add(Booking);
 
         jMenuBar1.add(jMenu2);
 
@@ -111,29 +124,36 @@ public class MainMenu extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(DesktopPane1)
-                .addContainerGap())
+                .addComponent(DesktopPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(DesktopPane1)
-                .addContainerGap())
+                .addComponent(DesktopPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void khachhangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_khachhangActionPerformed
-        Employee kh = new Employee();
-        DesktopPane1.add(kh);
-        kh.setVisible(true);
-    }//GEN-LAST:event_khachhangActionPerformed
+    private void CustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CustomerActionPerformed
+        Employee employee = new Employee();
+        DesktopPane1.add(employee);
+        employee.setVisible(true);
+    }//GEN-LAST:event_CustomerActionPerformed
 
-    private void TinhtienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TinhtienActionPerformed
-
-    }//GEN-LAST:event_TinhtienActionPerformed
+    private void BookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingActionPerformed
+        Booking bookingForm = null;
+        try {
+            bookingForm = new Booking();
+        } catch (SQLException ex) {
+            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        DesktopPane1.add(bookingForm);
+        bookingForm.setVisible(true);
+    }//GEN-LAST:event_BookingActionPerformed
 
     private void mniExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniExitActionPerformed
         System.exit(0);
@@ -152,6 +172,10 @@ public class MainMenu extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_createBookActionPerformed
+
+    private void StudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_StudentActionPerformed
 
     /**
      * @param args the command line arguments
@@ -184,21 +208,23 @@ public class MainMenu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainMenu().setVisible(true);
-                
+                MainMenu mainMenu = new MainMenu();
+                mainMenu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                mainMenu.setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem Book;
+    private javax.swing.JMenuItem Booking;
+    private javax.swing.JMenuItem Customer;
     private javax.swing.JDesktopPane DesktopPane1;
-    private javax.swing.JMenuItem Tinhtien;
+    private javax.swing.JMenuItem Student;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem khachhang;
     private javax.swing.JMenuItem mniExit;
-    private javax.swing.JMenuItem taohoadon;
     // End of variables declaration//GEN-END:variables
 }
