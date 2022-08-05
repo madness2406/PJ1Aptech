@@ -24,14 +24,14 @@ public class BookingDetail extends javax.swing.JInternalFrame {
 
     DefaultTableModel dfTableModel;
     int chucNangDaChon = ChucNang.NONE;
-    String hdso;
+    String bookingId;
 
     /**
      * Creates new form ChiTietHoaDon
      */
-    public BookingDetail(String hdso) throws SQLException {
+    public BookingDetail(String bookingId) throws SQLException {
         initComponents();
-        this.hdso = hdso;
+        this.bookingId = bookingId;
         dfTableModel = (DefaultTableModel) tblBookingList.getModel();
         retrieve();
         showData();
@@ -50,7 +50,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
     {
        DefaultComboBoxModel dm = new DatabaseManager().LayMHH();
        cbBookName.setModel(dm);
-       txtHDS.setText(""+hdso);
+       txtHDS.setText(""+bookingId);
     }
 
     void TblDSCTHD_SelectionChanged() {
@@ -72,7 +72,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
     //Lấy dữ liệu cho bảng lớp học
 
     void ReloadTaleChitiethoadon() {
-        if (DatabaseManager.ChiTietHoaDonToTable(tblBookingList,hdso) == false) {
+        if (DatabaseManager.ChiTietHoaDonToTable(tblBookingList,bookingId) == false) {
             JOptionPane.showMessageDialog(null, "Lấy dữ liệu chi tiết có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
             ReloadLblIndexTblDSCTHH();
         }

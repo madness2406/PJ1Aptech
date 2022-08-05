@@ -18,11 +18,12 @@ import javax.swing.JFrame;
  * @author Admin
  */
 public class MainMenu extends javax.swing.JFrame {
-
+    private int employeeId;
     /**
      * Creates new form Menu
      */
-    public MainMenu() {
+    public MainMenu(int employeeId) {
+        this.employeeId = employeeId;
         initComponents();
     }
 
@@ -147,7 +148,7 @@ public class MainMenu extends javax.swing.JFrame {
     private void BookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingActionPerformed
         Booking bookingForm = null;
         try {
-            bookingForm = new Booking();
+            bookingForm = new Booking(employeeId);
         } catch (SQLException ex) {
             Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -208,7 +209,7 @@ public class MainMenu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MainMenu mainMenu = new MainMenu();
+                MainMenu mainMenu = new MainMenu(1);
                 mainMenu.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 mainMenu.setVisible(true);
             }

@@ -37,12 +37,12 @@ public class BookManager {
 
     }
 
-    public static boolean Edit(String name, String author, String categoryId,
+    public static boolean Edit(String name, String author, String categoryId, String modifyDate ,
             String publishYear, String quantity, String price, String note) {
         DBConnection dbConn = new DBConnection();
         String sql = "Update book Set Name = N'" + name + "', Author = N'" + author + "', CategoryId = N'"
                 + categoryId + "', Publishyear = N'" + publishYear + "', Quantity = N'" + quantity
-                + "', Price = N'" + price + "', Note = N'" + note + ")";
+                + "', Price = N'" + price + "', Note = N'" + note + "', ModifiedTime = N'" + modifyDate + "')";
         return dbConn.UpdateData(sql);
     }
 
@@ -82,7 +82,7 @@ public class BookManager {
             value2.length() == 0 && coloumnName2.length() == 0) {
             sql = "Select COUNT(*) from " + tableName;
         } else {
-            sql = "Select COUNT(*) from " + tableName + " Where " + columnName1 + " = N'" + value1 + "', "
+            sql = "Select COUNT(*) from " + tableName + " Where " + columnName1 + " = N'" + value1 + "' And "
                     + coloumnName2 + " = N'" + value2 + "'";
         }
 

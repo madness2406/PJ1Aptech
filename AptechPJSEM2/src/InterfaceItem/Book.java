@@ -14,6 +14,11 @@ import javax.swing.table.DefaultTableModel;
 import Interface.*;
 import Process.DatabaseManager;
 import java.sql.SQLException;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -226,6 +231,7 @@ public class Book extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtNote = new javax.swing.JTextArea();
+        txtTest = new javax.swing.JTextField();
 
         tbBook.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tbBook.setModel(new javax.swing.table.DefaultTableModel(
@@ -394,9 +400,6 @@ public class Book extends javax.swing.JInternalFrame {
                         .addComponent(btnNext)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnLast))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(265, 265, 265)
-                        .addComponent(jLabel1))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -427,7 +430,12 @@ public class Book extends javax.swing.JInternalFrame {
                                 .addGroup(layout.createSequentialGroup()
                                     .addGap(62, 62, 62)
                                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jLabel3)))))
+                                .addComponent(jLabel3)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(68, 68, 68)
+                            .addComponent(txtTest, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(53, 53, 53)
+                            .addComponent(jLabel1))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnExit, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -453,7 +461,9 @@ public class Book extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(66, 66, 66)
+                        .addGap(26, 26, 26)
+                        .addComponent(txtTest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnDisplay)
                             .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -590,7 +600,8 @@ public class Book extends javax.swing.JInternalFrame {
         String publishYear = txtPublishYear.getText().trim();
         String note = txtNote.getText().trim();
         String categoryId = String.valueOf(cbCategoryId.getSelectedItem()).trim();
-
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+        LocalDateTime now = LocalDateTime.now();  
         //float dongia =Float.parseFloat(txtdongia.getText().trim()) ;
         if (chucNangDaChon == ChucNang.ADD) {
             if (CheckInput1() == false) {
@@ -616,7 +627,7 @@ public class Book extends javax.swing.JInternalFrame {
             if (CheckInput1() == false) {
                 return;
             }
-            if (BookManager.Edit(name, author, categoryId, publishYear, quantity, price, note)) {
+            if (BookManager.Edit(name, author, categoryId, dtf.format(now), publishYear, quantity, price, note)) {
                 btnEdit.requestFocus();
                 SwitchMode(ChucNang.NONE);
                 ReloadTableBook();
@@ -681,5 +692,6 @@ public class Book extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtPublishYear;
     private javax.swing.JTextField txtQuantity;
+    private javax.swing.JTextField txtTest;
     // End of variables declaration//GEN-END:variables
 }
