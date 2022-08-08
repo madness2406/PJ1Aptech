@@ -23,13 +23,13 @@ public class BookingManager {
         DBConnection dbconn = new DBConnection();
         String sql;
         if (!note.equals("")) {
-            sql = "Insert into booking (RenderId,LenderId,ExpiredDay,Status,Note)"
+            sql = "Insert into booking (RenderId,LenderId,ExpiredDay,Status,Deposit,Note)"
                     + " values (N'" + renderId + "',N'" + lenderId + "',N'"
-                    + day + "',N'" + status + "',N'" + note + "')";
+                    + day + "',N'" + status + "','0" + "',N'" + note + "')";
         } else {
-            sql = "Insert into booking (RenderId,LenderId,ExpiredDay,Status)"
+            sql = "Insert into booking (RenderId,LenderId,ExpiredDay,Status,Deposit)"
                     + " values (N'" + renderId + "',N'" + lenderId + "',N'"
-                    + day + "',N'" + status + "')";
+                    + day + "',N'" + status + "','0')";
         }
         return dbconn.UpdateData(sql);
 
@@ -63,7 +63,6 @@ public class BookingManager {
                 row[4] = rs.getString(4);
                 row[5] = rs.getString(6);
                 row[6] = rs.getString(7);
-                row[7] = rs.getString(8);
                 dfTableModel.addRow(row);
             }
             return true;
@@ -120,10 +119,8 @@ public class BookingManager {
     }
 
     public static String TotalMoney(String bookingId) {
-        String qr = "Select SUM(bkd.Quantity * b.Price) From booking bk"
-                + " INNER JOIN bookingdetail bkd ON bk.BookingId = bkd.BookBookingId"
-                + " INNER JOIN book b ON bkd.BookId = b.BookId"
-                + " Where bk.BookingId = '" + bookingId + "'";
+        String qr = "Select SUM(Money) From bookingdetail"
+                + " Where BookBookingId = '" + bookingId + "'";
         DBConnection dbConn = new DBConnection();
         ResultSet rs = dbConn.GetData(qr);
         try {

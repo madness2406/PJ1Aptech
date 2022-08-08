@@ -18,11 +18,11 @@ import javax.swing.JFrame;
  * @author Admin
  */
 public class MainMenu extends javax.swing.JFrame {
-    private int employeeId;
+    private String employeeId;
     /**
      * Creates new form Menu
      */
-    public MainMenu(int employeeId) {
+    public MainMenu(String employeeId) {
         this.employeeId = employeeId;
         initComponents();
     }
@@ -147,11 +147,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void BookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingActionPerformed
         Booking bookingForm = null;
-        try {
-            bookingForm = new Booking(employeeId);
-        } catch (SQLException ex) {
-            Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        bookingForm = new Booking(employeeId,DesktopPane1);
         DesktopPane1.add(bookingForm);
         bookingForm.setVisible(true);
     }//GEN-LAST:event_BookingActionPerformed
@@ -164,14 +160,12 @@ public class MainMenu extends javax.swing.JFrame {
     private void createBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createBookActionPerformed
         Book bookForm = null;
         try {
-            bookForm = new Book();
+            bookForm = new Book(employeeId);
         } catch (SQLException ex) {
             Logger.getLogger(MainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
         DesktopPane1.add(bookForm);
         bookForm.setVisible(true);
-
-
     }//GEN-LAST:event_createBookActionPerformed
 
     private void StudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentActionPerformed
@@ -209,7 +203,7 @@ public class MainMenu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MainMenu mainMenu = new MainMenu(1);
+                MainMenu mainMenu = new MainMenu("1");
                 mainMenu.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 mainMenu.setVisible(true);
             }

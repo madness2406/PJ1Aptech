@@ -11,14 +11,9 @@ import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import Interface.*;
-import Process.DatabaseManager;
 import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 /**
@@ -29,26 +24,29 @@ public class Book extends javax.swing.JInternalFrame {
 
     DefaultTableModel dfTableModel;
     int chucNangDaChon = ChucNang.NONE;
-    
+    String employeeId;
 
     /**
      * Creates new form HangHoa1
+     * @throws java.sql.SQLException
      */
-    public Book() throws SQLException {
+    public Book(String employeeId) throws SQLException {
         initComponents();
+        this.employeeId = employeeId;
         dfTableModel = (DefaultTableModel) tbBook.getModel();
         retrieve();
     }
     
     private void retrieve() throws SQLException {
-        DefaultComboBoxModel dm = new BookManager().GetCategoryId();
-        
+        DefaultComboBoxModel dm = BookManager.GetCategoryId();
+        txtId.setVisible(false);
         cbCategoryId.setModel(dm);
     }
 
     void TbHangHoa_SelectionChanged() {
         int row = tbBook.getSelectedRow();
         if (row >= 0) {
+            String bookId = (String) dfTableModel.getValueAt(row, 0);
             String name = (String) dfTableModel.getValueAt(row, 1);
             String author = (String) dfTableModel.getValueAt(row, 2);
             String categoryId = (String) dfTableModel.getValueAt(row, 3);
@@ -56,6 +54,7 @@ public class Book extends javax.swing.JInternalFrame {
             String quantity = (String) dfTableModel.getValueAt(row, 5);
             String price = (String) dfTableModel.getValueAt(row, 6);
             String note = (String) dfTableModel.getValueAt(row, 7);
+            txtId.setText(bookId);
             txtName.setText(name.trim());
             txtAuthor.setText(author.trim());
             txtPublishYear.setText(publishYear.trim());
@@ -231,7 +230,7 @@ public class Book extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtNote = new javax.swing.JTextArea();
-        txtTest = new javax.swing.JTextField();
+        txtId = new javax.swing.JTextField();
 
         tbBook.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tbBook.setModel(new javax.swing.table.DefaultTableModel(
@@ -432,9 +431,9 @@ public class Book extends javax.swing.JInternalFrame {
                                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jLabel3)))
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(68, 68, 68)
-                            .addComponent(txtTest, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(53, 53, 53)
+                            .addGap(14, 14, 14)
+                            .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(173, 173, 173)
                             .addComponent(jLabel1))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -461,9 +460,9 @@ public class Book extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(txtTest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(19, 19, 19)
+                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnDisplay)
                             .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -565,7 +564,7 @@ public class Book extends javax.swing.JInternalFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         int selectedRow = tbBook.getSelectedRow();
-        String bookId = (String) dfTableModel.getValueAt(selectedRow, 1);
+        String bookId = (String) dfTableModel.getValueAt(selectedRow, 0);
         if (selectedRow < 0) {
             JOptionPane.showMessageDialog(null, "Bạn chưa chọn cuốn sách nào để xóa", "Chưa chọn cuốn sách", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -575,15 +574,13 @@ public class Book extends javax.swing.JInternalFrame {
         if (result == JOptionPane.CANCEL_OPTION) {
             return;
         }
-        if (BookManager.Delete(bookId)) {
+        if (BookManager.Delete1(bookId)) {
             btnAdd.requestFocus();
             SwitchMode(ChucNang.NONE);
             ReloadTableBook();
             JOptionPane.showMessageDialog(null, "Xóa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            return;
         } else {
             JOptionPane.showMessageDialog(null, "Xóa thất bại", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-            return;
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -593,6 +590,7 @@ public class Book extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        String bookId = txtId.getText().trim();
         String name = txtName.getText().trim();
         String author = txtAuthor.getText().trim();
         String quantity = txtQuantity.getText().trim();
@@ -612,7 +610,7 @@ public class Book extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Mã hàng hoá bạn nhập đã tồn tại trong csdl", "Trùng mã", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if (BookManager.Add(name, author, categoryId, publishYear, quantity, price, note)) {
+            if (BookManager.Add(name, author, categoryId, publishYear, quantity, price, employeeId, note)) {
                 btnAdd.requestFocus();
                 SwitchMode(ChucNang.NONE);
                 ReloadTableBook();
@@ -627,15 +625,13 @@ public class Book extends javax.swing.JInternalFrame {
             if (CheckInput1() == false) {
                 return;
             }
-            if (BookManager.Edit(name, author, categoryId, dtf.format(now), publishYear, quantity, price, note)) {
+            if (BookManager.Edit(bookId, name, author, categoryId, publishYear, quantity, price, dtf.format(now), employeeId, note)) {
                 btnEdit.requestFocus();
                 SwitchMode(ChucNang.NONE);
                 ReloadTableBook();
                 JOptionPane.showMessageDialog(null, "Sửa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                return;
             } else {
                 JOptionPane.showMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
-                return;
             }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -652,11 +648,8 @@ public class Book extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
-        tbBook.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                TbHangHoa_SelectionChanged();
-            }
+        tbBook.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            TbHangHoa_SelectionChanged();
         });
         ReloadTableBook();
     }//GEN-LAST:event_btnDisplayActionPerformed
@@ -687,11 +680,11 @@ public class Book extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lblIndexTbBook;
     private javax.swing.JTable tbBook;
     private javax.swing.JTextField txtAuthor;
+    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextArea txtNote;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtPublishYear;
     private javax.swing.JTextField txtQuantity;
-    private javax.swing.JTextField txtTest;
     // End of variables declaration//GEN-END:variables
 }

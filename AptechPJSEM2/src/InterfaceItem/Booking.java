@@ -3,13 +3,11 @@ package InterfaceItem;
 import Process.ChucNang;
 import Process.DatabaseManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Interface.MainMenu;
 import Process.BookingManager;
+import javax.swing.JDesktopPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -18,16 +16,19 @@ import javax.swing.event.ListSelectionListener;
  * @author Admin
  */
 public class Booking extends javax.swing.JInternalFrame {
-
-    private int employeeId;
+    private final JDesktopPane DesktopPane1;
+    private final String employeeId;
     DefaultTableModel dfTableModel;
     int chucNangDaChon = ChucNang.NONE;
 
     /**
      * Creates new form QuanLyHoaDon
+     * @param employeeId
+     * @param DesktopPane1
      */
-    public Booking(int employeeId) throws SQLException {
+    public Booking(String employeeId, JDesktopPane DesktopPane1) {
         initComponents();
+        this.DesktopPane1 = DesktopPane1;
         this.employeeId = employeeId;
         txtId.setVisible(false);
         cbStatus.addItem("Mượn");
@@ -41,11 +42,11 @@ public class Booking extends javax.swing.JInternalFrame {
         if (row >= 0) {
             String id = (String) dfTableModel.getValueAt(row, 0);
             String renderId = (String) dfTableModel.getValueAt(row, 1);
-            String lenderId = (String) dfTableModel.getValueAt(row, 2);
             String expriedDay = (String) dfTableModel.getValueAt(row, 4);
             String status = (String) dfTableModel.getValueAt(row, 5);
             String deposit = (String) dfTableModel.getValueAt(row, 6);
             
+            txtId.setText(id);
             txtRenderId.setText(renderId.trim());
             cbStatus.setSelectedItem(status.trim());
             txtExpiredDay.setText(expriedDay.trim());
@@ -88,6 +89,7 @@ public class Booking extends javax.swing.JInternalFrame {
                 btnUpdate.setEnabled(!trangThai);
                 btnDelete.setEnabled(!trangThai);
                 txtRenderId.setText("");
+                txtExpiredDay.setText("");
                 txtDeposit.setText("");
                 btnAdd.setText("Hủy");
                 break;
@@ -172,7 +174,6 @@ public class Booking extends javax.swing.JInternalFrame {
         btnquaylai = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
-        btnBookingDetail = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnhienthi = new javax.swing.JButton();
@@ -185,6 +186,7 @@ public class Booking extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtNote = new javax.swing.JTextArea();
         jLabel9 = new javax.swing.JLabel();
+        btnDetail = new javax.swing.JButton();
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -225,15 +227,23 @@ public class Booking extends javax.swing.JInternalFrame {
         tbBooking.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         tbBooking.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Hóa đơn số", "Người mượn", "Thủ thư", "Ngày mượn", "Ngày hẹn trả", "Trạng thái", "Tiền cọc", "Tổng tiền"
+                "Hóa đơn số", "Người mượn", "Thủ thư", "Ngày mượn", "Ngày hẹn trả", "Trạng thái", "Tiền cọc"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(tbBooking);
 
         btnLast.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -292,14 +302,6 @@ public class Booking extends javax.swing.JInternalFrame {
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
-            }
-        });
-
-        btnBookingDetail.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnBookingDetail.setText("Nhập chi tiết");
-        btnBookingDetail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDetailActionPerformed(evt);
             }
         });
 
@@ -363,6 +365,14 @@ public class Booking extends javax.swing.JInternalFrame {
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel9.setText("Ghi chú");
+
+        btnDetail.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnDetail.setText("Nhập chi tiết");
+        btnDetail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDetailActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -432,13 +442,13 @@ public class Booking extends javax.swing.JInternalFrame {
                                         .addGap(252, 252, 252)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 161, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnBookingDetail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnquaylai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnhienthi, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnhienthi, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDetail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(13, 13, 13)))
                 .addContainerGap())
         );
@@ -450,8 +460,8 @@ public class Booking extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBookingDetail)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDetail)
+                        .addGap(18, 18, 18)
                         .addComponent(btnAdd)
                         .addGap(18, 18, 18)
                         .addComponent(btnUpdate)
@@ -461,7 +471,7 @@ public class Booking extends javax.swing.JInternalFrame {
                         .addComponent(btnhienthi)
                         .addGap(18, 18, 18)
                         .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                         .addComponent(btnquaylai))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -615,24 +625,6 @@ public class Booking extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
-    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
-        String bookingId = txtId.getText().trim();
-        if (bookingId.length() == 0) {
-            JOptionPane.showMessageDialog(null, "Vui lòng tạo hóa đơn trước", "Chưa có hóa đơn", JOptionPane.WARNING_MESSAGE);
-            txtId.requestFocus();
-        } else {
-            BookingDetail bookingDetail = null;
-            try {
-                bookingDetail = new BookingDetail(bookingId);
-            } catch (SQLException ex) {
-                Logger.getLogger(Booking.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            jDesktopPane1.add(bookingDetail);
-            bookingDetail.setVisible(true);
-        }
-
-    }//GEN-LAST:event_btnDetailActionPerformed
-
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         String hdSo = txtRenderId.getText().trim();
         txtTotalPrice.setText(DatabaseManager.triGia(hdSo).toString());
@@ -674,11 +666,8 @@ public class Booking extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
-        tbBooking.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                TbBooking_SelectionChanged();
-            }
+        tbBooking.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            TbBooking_SelectionChanged();
         });
 
         ReloadTaleHD();
@@ -704,12 +693,26 @@ public class Booking extends javax.swing.JInternalFrame {
             txtTotalPrice.setText("0.0");
     }//GEN-LAST:event_txtIdKeyReleased
 
+    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
+        // TODO add your handling code here:
+            String bookingId = txtId.getText().trim();
+//        if (bookingId.length() == 0) {
+//            JOptionPane.showMessageDialog(null, "Vui lòng chọn hóa đơn", "Chưa chọn hóa đơn", JOptionPane.WARNING_MESSAGE);
+//            tbBooking.requestFocus();
+//        } else {
+            BookingDetail bookingDetail = new BookingDetail(bookingId);
+            DesktopPane1.add(bookingDetail);
+            this.setVisible(false);
+            bookingDetail.setVisible(true);
+//        }
+    }//GEN-LAST:event_btnDetailActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBack;
-    private javax.swing.JButton btnBookingDetail;
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnFirst;
     private javax.swing.JButton btnLast;
     private javax.swing.JButton btnNext;

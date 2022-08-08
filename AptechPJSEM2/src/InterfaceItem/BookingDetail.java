@@ -5,15 +5,10 @@
  */
 package InterfaceItem;
 
+import Process.BookingDetailManager;
 import Process.ChucNang;
-import Process.DatabaseManager;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,77 +17,116 @@ import javax.swing.table.DefaultTableModel;
  */
 public class BookingDetail extends javax.swing.JInternalFrame {
 
-    DefaultTableModel dfTableModel;
+    DefaultTableModel tbmBookingDetail;
+    DefaultTableModel tbmBook;
     int chucNangDaChon = ChucNang.NONE;
     String bookingId;
 
     /**
      * Creates new form ChiTietHoaDon
+     *
+     * @param bookingId
      */
-    public BookingDetail(String bookingId) throws SQLException {
+    public BookingDetail(String bookingId) {
         initComponents();
         this.bookingId = bookingId;
-        dfTableModel = (DefaultTableModel) tblBookingList.getModel();
         retrieve();
-        showData();
     }
 
-    private void showData() {
-        String mahh = cbBookName.getSelectedItem().toString();
-        try {
-            lblPrice.setText(DatabaseManager.LayGT("dongia", mahh));
-        } catch (SQLException ex) {
-            Logger.getLogger(BookingDetail.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private void retrieve() {
+        tbmBookingDetail = (DefaultTableModel) tblBookingDetailList.getModel();
+        tbmBook = (DefaultTableModel) tbBook.getModel();
+        LoadBookTable();
+        tbBook.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            TblBook_SelectionChanged();
+        });
     }
 
-   private void retrieve() throws SQLException
-    {
-       DefaultComboBoxModel dm = new DatabaseManager().LayMHH();
-       cbBookName.setModel(dm);
-       txtHDS.setText(""+bookingId);
-    }
-
-    void TblDSCTHD_SelectionChanged() {
-         int row = tblBookingList.getSelectedRow();
+    void TblBook_SelectionChanged() {
+        int row = tbBook.getSelectedRow();
         if (row >= 0) {
-            String hdso =(String) dfTableModel.getValueAt(row, 0);
-            String maHH = (String) dfTableModel.getValueAt(row, 1);
-            String sLuong = (String) dfTableModel.getValueAt(row, 2);
-            //txtHDS.setText(hdso.trim());
-            cbBookName.setSelectedItem(maHH.trim());
-            txtQuantity.setText(sLuong.trim());
+            String bookId = (String) tbmBook.getValueAt(row, 0);
+            String bookName = (String) tbmBook.getValueAt(row, 1);
+            String author = (String) tbmBook.getValueAt(row, 2);
+            String totalQuantity = BookingDetailManager.GetData("book", "Quantity", "BookId", bookId);
+            String price = BookingDetailManager.GetData("book", "Price", "BookId", bookId);
+            txtBookId.setText(bookId.trim());
+            txtBookName.setText(bookName.trim());
+            txtAuthor.setText(author.trim());
+            txtBookQuantity.setText(totalQuantity);
+            txtBookPrice.setText(price);
         } else {
+            txtBookId.setText("");
+            txtBookName.setText("");
+            txtAuthor.setText("");
+            txtBookQuantity.setText("");
+            txtBookPrice.setText("");
+        }
+    }
 
-            txtHDS.setText("");
+    void TblBookingDetail_SelectionChanged() {
+        int row = tblBookingDetailList.getSelectedRow();
+
+        if (row >= 0) {
+            String bookId = (String) tbmBookingDetail.getValueAt(row, 0);
+            String bookName = (String) tbmBookingDetail.getValueAt(row, 1);
+            String quantity = (String) tbmBookingDetail.getValueAt(row, 2);
+            String totalPrice = (String) tbmBookingDetail.getValueAt(row, 3);
+            String totalQuantity = BookingDetailManager.GetData("book", "Quantity", "BookId", bookId);
+            String author = BookingDetailManager.GetData("book", "Author", "BookId", bookId);
+            String price = BookingDetailManager.GetData("book", "Price", "BookId", bookId);
+            txtBookId.setText(bookId.trim());
+            txtBookName.setText(bookName.trim());
+            txtAuthor.setText(author.trim());
+            txtBookQuantity.setText(totalQuantity);
+            txtQuantity.setText(quantity);
+            txtBookPrice.setText(price);
+            txtTotalPrice.setText(totalPrice);
+        } else {
+            txtBookId.setText("");
+            txtBookName.setText("");
+            txtAuthor.setText("");
+            txtBookQuantity.setText("");
             txtQuantity.setText("");
+            txtBookPrice.setText("");
+            txtTotalPrice.setText("");
         }
-        ReloadLblIndexTblDSCTHH();
     }
-    //Lấy dữ liệu cho bảng lớp học
+    //Lấy dữ liệu cho bảng
 
-    void ReloadTaleChitiethoadon() {
-        if (DatabaseManager.ChiTietHoaDonToTable(tblBookingList,bookingId) == false) {
+    void ReloadTableBookingDetail() {
+        if (BookingDetailManager.BookingDetailToTable(tblBookingDetailList, bookingId) == false) {
             JOptionPane.showMessageDialog(null, "Lấy dữ liệu chi tiết có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-            ReloadLblIndexTblDSCTHH();
+            ReloadLblIndexTblBookingDetail();
         }
     }
 
-    void ReloadLblIndexTblDSCTHH() {
-        int rowSelected = tblBookingList.getSelectedRow();
-        int totalRow = tblBookingList.getRowCount();
-        lblIndexTblKH.setText((rowSelected + 1) + "/" + totalRow);
+    void LoadBookTable() {
+        if (BookingDetailManager.BookToTable(tbBook) == false) {
+            JOptionPane.showMessageDialog(null, "Lấy dữ liệu chi tiết có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    void SwitchMode(int chucNang){
+    void LoadSearchingBookTable(String constraint) {
+        if (BookingDetailManager.SearchBookToTable(tbBook, constraint) == false) {
+            JOptionPane.showMessageDialog(null, "Không tìm thấy tên sách vừa nhập", "Không tìm thấy", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    void ReloadLblIndexTblBookingDetail() {
+        int rowSelected = tblBookingDetailList.getSelectedRow();
+        int totalRow = tblBookingDetailList.getRowCount();
+        lblIndexTblBookingDetail.setText((rowSelected + 1) + "/" + totalRow);
+    }
+
+    void SwitchMode(int chucNang) {
         chucNangDaChon = chucNang;
         switch (chucNang) {
             case ChucNang.ADD: {
                 boolean trangThai = true;
-                cbBookName.setEnabled(trangThai);
+                tbBook.setEnabled(trangThai);
                 txtQuantity.setEnabled(trangThai);
-                cbBookName.setEnabled(trangThai);
-                txtHDS.requestFocus();
+                txtQuantity.requestFocus();
                 btnSave.setEnabled(trangThai);
                 btnUpdate.setEnabled(!trangThai);
                 btnDelete.setEnabled(!trangThai);
@@ -102,10 +136,9 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             }
             case ChucNang.UPDATE: {
                 boolean trangThai = true;
-                cbBookName.setEnabled(trangThai);
+                tbBook.setEnabled(trangThai);
                 txtQuantity.setEnabled(trangThai);
-                cbBookName.setEnabled(trangThai);
-                cbBookName.requestFocus();
+                txtQuantity.requestFocus();
                 btnSave.setEnabled(trangThai);
                 btnAdd.setEnabled(!trangThai);
                 btnDelete.setEnabled(!trangThai);
@@ -114,10 +147,10 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             }
             case ChucNang.NONE: {
                 boolean trangThai = false;
-                cbBookName.setEnabled(trangThai);
+                tbBook.setEnabled(trangThai);
+                txtBookId.setEnabled(trangThai);
                 txtQuantity.setEnabled(trangThai);
                 btnSave.setEnabled(trangThai);
-                cbBookName.setEnabled(trangThai);
                 btnAdd.setEnabled(true);
                 btnUpdate.setEnabled(true);
                 btnDelete.setEnabled(true);
@@ -128,14 +161,14 @@ public class BookingDetail extends javax.swing.JInternalFrame {
     }
 
     boolean CheckInput() {
-        String maHH = cbBookName.getSelectedItem().toString();
-        String sLuong = txtQuantity.getText().trim();
-        if (maHH.length() == 0) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn mã hàng hóa", "Chưa chọn mã hàng hóa", JOptionPane.WARNING_MESSAGE);
-            cbBookName.requestFocus();
+        String bookId = txtBookId.getText().trim();
+        String quantity = txtQuantity.getText().trim();
+        if (bookId.length() == 0) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn sách cần thêm", "Chưa chọn sách", JOptionPane.WARNING_MESSAGE);
+            tbBook.requestFocus();
             return false;
         }
-        if (sLuong.length() == 0) {
+        if (quantity.length() == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng nhập số lượng", "Chưa nhập số lượng", JOptionPane.WARNING_MESSAGE);
             txtQuantity.requestFocus();
             return false;
@@ -150,6 +183,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
         }
         this.dispose();
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -160,30 +194,37 @@ public class BookingDetail extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         btnReturn = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtHDS = new javax.swing.JTextField();
         txtQuantity = new javax.swing.JTextField();
         btnFirst = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
-        cbBookName = new javax.swing.JComboBox<>();
         btnAdd = new javax.swing.JButton();
         btnLast = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         btnSave = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
-        lblIndexTblKH = new javax.swing.JLabel();
+        lblIndexTblBookingDetail = new javax.swing.JLabel();
         btnDisplay = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblBookingList = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
+        tblBookingDetailList = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
-        lblPrice = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        txtDisposit = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbBook = new javax.swing.JTable();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
+        txtBookName = new javax.swing.JTextField();
+        txtBookId = new javax.swing.JTextField();
+        txtAuthor = new javax.swing.JTextField();
+        txtBookQuantity = new javax.swing.JTextField();
+        txtBookPrice = new javax.swing.JTextField();
+        txtTotalPrice = new javax.swing.JTextField();
 
         btnReturn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnReturn.setText("Quay lại");
@@ -193,17 +234,16 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel4.setText("Chi tiết");
-
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel5.setText("Số lượng");
-
-        txtHDS.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        txtHDS.setEnabled(false);
+        jLabel5.setText("Số lượng mượn");
 
         txtQuantity.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         txtQuantity.setEnabled(false);
+        txtQuantity.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtQuantityKeyReleased(evt);
+            }
+        });
 
         btnFirst.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnFirst.setText("|<");
@@ -229,14 +269,6 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             }
         });
 
-        cbBookName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cbBookName.setEnabled(false);
-        cbBookName.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbBookNameItemStateChanged(evt);
-            }
-        });
-
         btnAdd.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnAdd.setText("Thêm");
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -254,7 +286,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
         });
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel10.setText("Đơn giá");
+        jLabel10.setText("Thành tiền");
 
         btnSave.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnSave.setText("Lưu");
@@ -280,8 +312,8 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             }
         });
 
-        lblIndexTblKH.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblIndexTblKH.setText("0/0");
+        lblIndexTblBookingDetail.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblIndexTblBookingDetail.setText("0/0");
 
         btnDisplay.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnDisplay.setText("Hiển thị");
@@ -291,152 +323,233 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             }
         });
 
-        tblBookingList.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        tblBookingList.setModel(new javax.swing.table.DefaultTableModel(
+        tblBookingDetailList.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tblBookingDetailList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Đơn số", "Tên sách", "Số lượng", "Đặt cọc", "Đơn giá"
+                "Mã sách", "Tên sách", "Số lượng", "Thành tiền"
             }
-        ));
-        tblBookingList.setAutoscrolls(false);
-        jScrollPane2.setViewportView(tblBookingList);
-        if (tblBookingList.getColumnModel().getColumnCount() > 0) {
-            tblBookingList.getColumnModel().getColumn(0).setMinWidth(50);
-            tblBookingList.getColumnModel().getColumn(0).setMaxWidth(50);
-            tblBookingList.getColumnModel().getColumn(1).setMinWidth(300);
-            tblBookingList.getColumnModel().getColumn(1).setMaxWidth(300);
-            tblBookingList.getColumnModel().getColumn(2).setMinWidth(70);
-            tblBookingList.getColumnModel().getColumn(2).setMaxWidth(70);
-            tblBookingList.getColumnModel().getColumn(3).setMinWidth(150);
-            tblBookingList.getColumnModel().getColumn(3).setMaxWidth(150);
-        }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("Ðơn số");
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblBookingDetailList.setAutoscrolls(false);
+        jScrollPane2.setViewportView(tblBookingDetailList);
+        if (tblBookingDetailList.getColumnModel().getColumnCount() > 0) {
+            tblBookingDetailList.getColumnModel().getColumn(0).setMinWidth(70);
+            tblBookingDetailList.getColumnModel().getColumn(0).setMaxWidth(70);
+            tblBookingDetailList.getColumnModel().getColumn(1).setMinWidth(300);
+            tblBookingDetailList.getColumnModel().getColumn(1).setMaxWidth(300);
+            tblBookingDetailList.getColumnModel().getColumn(2).setMinWidth(70);
+            tblBookingDetailList.getColumnModel().getColumn(2).setMaxWidth(70);
+        }
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setText("Tên sách");
 
-        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel9.setText("Đặt cọc");
-
-        txtDisposit.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        txtDisposit.setEnabled(false);
-
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Thông tin chi tiết");
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel11.setText("Mã sách");
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel12.setText("Tác giả");
+
+        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel13.setText("Số lượng tồn");
+
+        jLabel14.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel14.setText("Đơn giá");
+
+        tbBook.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Id", "Book Name", "Author"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbBook.setEnabled(false);
+        jScrollPane1.setViewportView(tbBook);
+        if (tbBook.getColumnModel().getColumnCount() > 0) {
+            tbBook.getColumnModel().getColumn(0).setMinWidth(50);
+            tbBook.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
+
+        txtSearch.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        btnSearch.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnSearch.setText("Tìm kiếm");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        txtBookName.setEnabled(false);
+
+        txtBookId.setEnabled(false);
+
+        txtAuthor.setEnabled(false);
+
+        txtBookQuantity.setEnabled(false);
+
+        txtBookPrice.setEnabled(false);
+
+        txtTotalPrice.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(86, 86, 86)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtQuantity, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbBookName, javax.swing.GroupLayout.Alignment.LEADING, 0, 145, Short.MAX_VALUE)
-                            .addComponent(txtHDS)
-                            .addComponent(txtDisposit)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(88, 88, 88)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel10)
-                                .addGap(18, 18, 18)
-                                .addComponent(lblPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnFirst))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBack)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblIndexTblKH)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnNext)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnLast)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnDisplay, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                        .addComponent(btnUpdate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(62, 62, 62))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel4)))
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(268, 268, 268)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 6, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(69, 69, 69)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel13)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel14)
+                                    .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(txtBookQuantity, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                                            .addComponent(txtBookId))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel12)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(txtAuthor, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtBookName, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtBookPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(41, 41, 41)
+                                .addComponent(jLabel1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(58, 58, 58)
+                                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(btnFirst)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnBack)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(lblIndexTblBookingDetail)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnNext)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnLast)
+                                        .addGap(57, 57, 57)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtHDS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(btnDisplay))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbBookName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(11, 11, 11)
+                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSearch))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(21, 21, 21)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(txtBookName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(txtBookId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12)
+                            .addComponent(txtAuthor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(txtBookQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(13, 13, 13)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel14)
+                            .addComponent(txtBookPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtDisposit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAdd)
-                        .addGap(10, 10, 10)
-                        .addComponent(btnSave)
-                        .addGap(10, 10, 10)
-                        .addComponent(btnUpdate)
+                            .addComponent(jLabel10)
+                            .addComponent(txtTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                        .addComponent(btnDisplay)
                         .addGap(18, 18, 18)
-                        .addComponent(btnDelete)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
-                .addGap(51, 51, 51)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnFirst)
-                    .addComponent(btnBack)
-                    .addComponent(lblIndexTblKH)
-                    .addComponent(btnNext)
-                    .addComponent(btnLast)
-                    .addComponent(btnReturn))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(57, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAdd)
+                            .addComponent(btnSave)
+                            .addComponent(btnUpdate)
+                            .addComponent(btnDelete))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnFirst)
+                            .addComponent(btnBack)
+                            .addComponent(lblIndexTblBookingDetail)
+                            .addComponent(btnNext)
+                            .addComponent(btnLast)
+                            .addComponent(btnReturn))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -448,34 +561,30 @@ public class BookingDetail extends javax.swing.JInternalFrame {
 
     private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
         // TODO add your handling code here:
-        if (tblBookingList.getRowCount() > 0) {
-            tblBookingList.getSelectionModel().setSelectionInterval(0, 0);
+        if (tblBookingDetailList.getRowCount() > 0) {
+            tblBookingDetailList.getSelectionModel().setSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_btnFirstActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        int rowSelected = tblBookingList.getSelectedRow();
+        int rowSelected = tblBookingDetailList.getSelectedRow();
         if (rowSelected > 0) {
             rowSelected--;
-            tblBookingList.getSelectionModel().setSelectionInterval(rowSelected, rowSelected);
+            tblBookingDetailList.getSelectionModel().setSelectionInterval(rowSelected, rowSelected);
         }
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
-        int rowSelected = tblBookingList.getSelectedRow();
-        if (rowSelected < tblBookingList.getRowCount() - 1) {
+        int rowSelected = tblBookingDetailList.getSelectedRow();
+        if (rowSelected < tblBookingDetailList.getRowCount() - 1) {
             rowSelected++;
-            tblBookingList.getSelectionModel().setSelectionInterval(rowSelected,
-                rowSelected);
+            tblBookingDetailList.getSelectionModel().setSelectionInterval(rowSelected,
+                    rowSelected);
         }
 //GEN-LAST:event_btnNextActionPerformed
-        }
-    private void cbBookNameItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbBookNameItemStateChanged
-        showData();
-    }//GEN-LAST:event_cbBookNameItemStateChanged
-
+    }
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
         if (chucNangDaChon == ChucNang.NONE) {
@@ -487,31 +596,44 @@ public class BookingDetail extends javax.swing.JInternalFrame {
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
         // TODO add your handling code here:
-        if (tblBookingList.getRowCount() > 0) {
-            int lastRowIndex = tblBookingList.getRowCount() - 1;
-            tblBookingList.getSelectionModel().setSelectionInterval(lastRowIndex,lastRowIndex);
+        if (tblBookingDetailList.getRowCount() > 0) {
+            int lastRowIndex = tblBookingDetailList.getRowCount() - 1;
+            tblBookingDetailList.getSelectionModel().setSelectionInterval(lastRowIndex, lastRowIndex);
         }
     }//GEN-LAST:event_btnLastActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
-        String hdSo = txtHDS.getText().trim();
-        String maHH = cbBookName.getSelectedItem().toString();
-        String sLuong = txtQuantity.getText().trim();
-        
+        String bookId = txtBookId.getText().trim();
+        String quantity = txtQuantity.getText().trim();
+        String money = txtTotalPrice.getText().trim();
+        String bookQuantity = txtBookQuantity.getText().trim();
+        String _quantity = BookingDetailManager.GetData("bookingdetail", "Quantity", "BookId", bookId, "BookBookingId", bookingId);
+
         if (chucNangDaChon == ChucNang.ADD) {
             if (CheckInput() == false) {
                 return;
             }
-            if (DatabaseManager.CountCTHD1("Chitiethoadon","hdso",hdSo,"mahh",maHH ) > 0) {
-                txtQuantity.requestFocus();
-                JOptionPane.showMessageDialog(null, "Mã hàng hóa bạn nhập đã tồn tại", "Trùng mã", JOptionPane.WARNING_MESSAGE);
+            if (BookingDetailManager.Count("bookingdetail", "BookBookingId", bookingId, "BookId", bookId) > 0) {
+                tbBook.requestFocus();
+                JOptionPane.showMessageDialog(null, "Sách bạn nhập đã tồn tại", "Trùng sách", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if (DatabaseManager.ThemChiTietHoaDon(hdSo, maHH, sLuong)) {
-                btnAdd.requestFocus();
+            if (Integer.parseInt(quantity) > Integer.parseInt(bookQuantity)) {
+                tbBook.requestFocus();
+                JOptionPane.showMessageDialog(null, "Số lượng mượn phải nhỏ hơn số lượng tồn kho", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (BookingDetailManager.Add(bookingId, bookId, quantity, money, bookQuantity)) {
+                String _totalMoney = BookingDetailManager.TotalValue("SUM(Money)", "bookingdetail", "BookBookingId", bookingId);
+                float deposit = Math.round(Float.parseFloat(_totalMoney) / 1000 / 3) * 1000;
+                String _deposit = String.valueOf(deposit);
+                if (BookingDetailManager.UpdateToBooking(bookingId, "Deposit", _deposit, "TotalMoney", _totalMoney)) {
+                    btnAdd.requestFocus();
+                }
                 SwitchMode(ChucNang.NONE);
-                ReloadTaleChitiethoadon();
+                ReloadTableBookingDetail();
                 JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 return;
             } else {
@@ -523,22 +645,25 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             if (CheckInput() == false) {
                 return;
             }
-            if (DatabaseManager.SuaChiTietHoaDon(hdSo, maHH, sLuong)) {
-                btnUpdate.requestFocus();
+            if (BookingDetailManager.Edit(bookingId, bookId, quantity, money, bookQuantity, _quantity)) {
+                String _totalMoney = BookingDetailManager.TotalValue("SUM(Money)", "bookingdetail", "BookBookingId", bookingId);
+                float deposit = Math.round(Float.parseFloat(_totalMoney) / 1000 / 3) * 1000;
+                String _deposit = String.valueOf(deposit);
+                if (BookingDetailManager.UpdateToBooking(bookingId, "Deposit", _deposit, "TotalMoney", _totalMoney)) {
+                    btnUpdate.requestFocus();
+                }
                 SwitchMode(ChucNang.NONE);
-                ReloadTaleChitiethoadon();
-                JOptionPane.showMessageDialog(null, "Sửa thành công","Thành công", JOptionPane.INFORMATION_MESSAGE);
-                return;
+                ReloadTableBookingDetail();
+                JOptionPane.showMessageDialog(null, "Sửa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
-                return;
             }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
-        if (tblBookingList.getSelectedRow() == -1) {
+        if (tblBookingDetailList.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null, "Chưa chọn chi tiết hoá đơn để sửa", "Chưa chọn chi tiết hoá đơn", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -551,38 +676,59 @@ public class BookingDetail extends javax.swing.JInternalFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-        int selectedRow = tblBookingList.getSelectedRow();
+        int selectedRow = tblBookingDetailList.getSelectedRow();
+        String quantity = txtQuantity.getText().trim();
+        String bookQuantity = txtBookQuantity.getText().trim();
+
         if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(null, "Bạn chưa chọn mặt hàng nào để xóa", "Chưa chọn mặt hàng", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Bạn chưa chọn mục nào để xóa", "Chưa chọn", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa mặt hàng này không", "Xóa mặt hàng?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa mục này không", "Xóa", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.CANCEL_OPTION) {
             return;
         }
-        String mahh = (String) tblBookingList.getValueAt(selectedRow, 1);
-        String hdSo = (String) tblBookingList.getValueAt(selectedRow, 0);
-        if (DatabaseManager.XoaChiTietHoaDon(mahh, hdSo)) {
-            btnAdd.requestFocus();
+        String bookId = (String) tblBookingDetailList.getValueAt(selectedRow, 0);
+        if (BookingDetailManager.Delete(bookingId, bookId, quantity, bookQuantity)) {
+            String _totalMoney = BookingDetailManager.TotalValue("SUM(Money)", "bookingdetail", "BookBookingId", bookingId);
+                float deposit = Math.round(Float.parseFloat(_totalMoney) / 1000 / 3) * 1000;
+                String _deposit = String.valueOf(deposit);
+                if (BookingDetailManager.UpdateToBooking(bookingId, "Deposit", _deposit, "TotalMoney", _totalMoney)) {
+                    btnAdd.requestFocus();
+                }
             SwitchMode(ChucNang.NONE);
-            ReloadTaleChitiethoadon();
-            JOptionPane.showMessageDialog(null, "Xóa thành công","Thành công", JOptionPane.INFORMATION_MESSAGE);
-            return;
+            ReloadTableBookingDetail();
+            JOptionPane.showMessageDialog(null, "Xóa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, "Xóa thất bại", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-            return;
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
-        tblBookingList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                TblDSCTHD_SelectionChanged();
-            }
+        tblBookingDetailList.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            TblBookingDetail_SelectionChanged();
         });
-        ReloadTaleChitiethoadon();
+        ReloadTableBookingDetail();
     }//GEN-LAST:event_btnDisplayActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        // TODO add your handling code here:
+        String constraint = txtSearch.getText().trim();
+        LoadSearchingBookTable(constraint);
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void txtQuantityKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantityKeyReleased
+        // TODO add your handling code here:
+        int quantity;
+        if (txtQuantity.getText().trim().equals("")) {
+            quantity = 0;
+        } else {
+            quantity = Integer.parseInt(txtQuantity.getText().trim());
+        }
+
+        int price = Integer.parseInt(txtBookPrice.getText().trim());
+        txtTotalPrice.setText("" + (quantity * price));
+    }//GEN-LAST:event_txtQuantityKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -595,21 +741,28 @@ public class BookingDetail extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnReturn;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JComboBox<String> cbBookName;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lblIndexTblKH;
-    private javax.swing.JLabel lblPrice;
-    private javax.swing.JTable tblBookingList;
-    private javax.swing.JTextField txtDisposit;
-    private javax.swing.JTextField txtHDS;
+    private javax.swing.JLabel lblIndexTblBookingDetail;
+    private javax.swing.JTable tbBook;
+    private javax.swing.JTable tblBookingDetailList;
+    private javax.swing.JTextField txtAuthor;
+    private javax.swing.JTextField txtBookId;
+    private javax.swing.JTextField txtBookName;
+    private javax.swing.JTextField txtBookPrice;
+    private javax.swing.JTextField txtBookQuantity;
     private javax.swing.JTextField txtQuantity;
+    private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtTotalPrice;
     // End of variables declaration//GEN-END:variables
 }

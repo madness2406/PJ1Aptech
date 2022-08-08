@@ -67,6 +67,27 @@ public class DBConnection {
         }
 
     }
+    
+    public boolean UpdateData(String query1, String query2) {
+        Connection con = getConnection();
+        if (con == null) {
+            CloseConnection(con);
+            return false;
+        }
+        Statement stmt;
+        try {
+            stmt = con.createStatement();
+            stmt.executeUpdate(query1);
+            stmt.executeUpdate(query2);
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return false;
+        }
+
+    }
 
     private void CloseConnection(Connection con) {
         try {

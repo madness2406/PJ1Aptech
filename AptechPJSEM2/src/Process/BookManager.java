@@ -18,36 +18,38 @@ import javax.swing.table.DefaultTableModel;
 public class BookManager {
 
     public static boolean Add(String name, String author, String categoryId,
-            String publishYear, String quantity, String price, String note) {
+            String publishYear, String quantity, String price, String creatorId, String note) {
         DBConnection dbconn = new DBConnection();
         String sql;
         if (!note.equals("")) {
-            sql = "Insert into book (Name,Author,CategoryId,PublishYear,Quantity,Price,Note)"
+            sql = "Insert into book (Name,Author,CategoryId,PublishYear,Quantity,Price,CreatorId,Note)"
                     + " values (N'" + name + "',N'" + author + "',N'"
                     + categoryId + "',N'" + publishYear + "',N'" + quantity + "',N'"
-                    + price + "',N'" + note + "')";
+                    + price + "',N'" + creatorId + "',N'" + note + "')";
         }
         else{
-            sql = "Insert into book (Name,Author,CategoryId,PublishYear,Quantity,Price)"
+            sql = "Insert into book (Name,Author,CategoryId,PublishYear,Quantity,Price,CreatorId)"
                     + " values (N'" + name + "',N'" + author + "',N'"
                     + categoryId + "',N'" + publishYear + "',N'" + quantity + "',N'"
-                    + price + "')";
+                    + price + "',N'" + creatorId + "')";
         }
         return dbconn.UpdateData(sql);
 
     }
 
-    public static boolean Edit(String name, String author, String categoryId, String modifyDate ,
-            String publishYear, String quantity, String price, String note) {
+    public static boolean Edit(String id, String name, String author, String categoryId,
+            String publishYear, String quantity, String price, String modifyDate, String changerId, String note) {
         DBConnection dbConn = new DBConnection();
         String sql = "Update book Set Name = N'" + name + "', Author = N'" + author + "', CategoryId = N'"
                 + categoryId + "', Publishyear = N'" + publishYear + "', Quantity = N'" + quantity
-                + "', Price = N'" + price + "', Note = N'" + note + "', ModifiedTime = N'" + modifyDate + "')";
+                + "', Price = N'" + price + "', ModifiedTime = N'" + modifyDate + "', ChangerId = N'" + changerId
+                + "', Note = N'" + note + "'"
+                + " Where BookId = '" + id + "'";
         return dbConn.UpdateData(sql);
     }
 
-    public static boolean Delete(String bookId) {
-        String sql = "Delete From book Where BookId ='" + bookId + "'";
+    public static boolean Delete1(String bookId) {
+        String sql = "Delete From book Where BookId = '" + bookId + "'";
         DBConnection dbConn = new DBConnection();
         return dbConn.UpdateData(sql);
     }
@@ -67,11 +69,11 @@ public class BookManager {
                 row[4] = rs.getString(4);
                 row[5] = rs.getString(6);
                 row[6] = rs.getString(7);
-                row[7] = rs.getString(9);
+                row[7] = rs.getString(12);
                 dfTableModel.addRow(row);
             }
             return true;
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             return false;
         }
@@ -93,7 +95,7 @@ public class BookManager {
                 int count = Integer.parseInt(rs.getString(1));
                 return count;
             }
-        } catch (Exception ex) {
+        } catch (NumberFormatException | SQLException ex) {
             java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             return -1;
         }
