@@ -9,7 +9,6 @@ import Process.ChucNang;
 import Process.BookManager;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.time.*;
@@ -28,6 +27,7 @@ public class Book extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form HangHoa1
+     * @param employeeId
      * @throws java.sql.SQLException
      */
     public Book(String employeeId) throws SQLException {
@@ -49,8 +49,8 @@ public class Book extends javax.swing.JInternalFrame {
             String bookId = (String) dfTableModel.getValueAt(row, 0);
             String name = (String) dfTableModel.getValueAt(row, 1);
             String author = (String) dfTableModel.getValueAt(row, 2);
-            String categoryId = (String) dfTableModel.getValueAt(row, 3);
-            String publishYear = (String) dfTableModel.getValueAt(row, 4);
+            String categoryId = (String) dfTableModel.getValueAt(row, 4);
+            String publishYear = (String) dfTableModel.getValueAt(row, 3);
             String quantity = (String) dfTableModel.getValueAt(row, 5);
             String price = (String) dfTableModel.getValueAt(row, 6);
             String note = (String) dfTableModel.getValueAt(row, 7);
@@ -77,7 +77,7 @@ public class Book extends javax.swing.JInternalFrame {
         if (BookManager.BookToTable(tbBook) == false) {
             JOptionPane.showMessageDialog(null, "Lấy dữ liệu khách hàng có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
         }
-
+        ReloadLblIndexTBBook();
     }
 
     void ReloadLblIndexTBBook() {

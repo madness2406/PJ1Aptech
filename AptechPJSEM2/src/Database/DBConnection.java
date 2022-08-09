@@ -18,8 +18,6 @@ public class DBConnection {
         Connection connection = null; // Tạo ra một biến kết nối 
         try {
             connection = DriverManager.getConnection(connString, "root", ""); // Công việc kết nối
-
-            System.out.println("Connect successful");
             return connection;
         } catch (SQLException e) {
             System.out.println("Connect not successful");
@@ -40,8 +38,7 @@ public class DBConnection {
             ResultSet rs = stmt.executeQuery(query);
             return rs;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             CloseConnection(con);
             return null;
         }
@@ -60,9 +57,7 @@ public class DBConnection {
             stmt.executeUpdate(query);
             return true;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-
+        } catch (SQLException e) {
             return false;
         }
 
@@ -81,8 +76,7 @@ public class DBConnection {
             stmt.executeUpdate(query2);
             return true;
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
 
             return false;
         }
@@ -92,8 +86,7 @@ public class DBConnection {
     private void CloseConnection(Connection con) {
         try {
             con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
         }
     }
 

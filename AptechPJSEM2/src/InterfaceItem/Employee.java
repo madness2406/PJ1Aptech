@@ -4,14 +4,11 @@
  * and open the template in the editor.
  */
 package InterfaceItem;
-import Interface.MainMenu;
 import Process.*;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.lang.String;
-import Process.DatabaseManager;
 
 /**
  *
@@ -46,9 +43,9 @@ public class Employee extends javax.swing.JInternalFrame {
     }
 
     void ReloadTaleKhachhang() {
-        if (DatabaseManager.KhachhangToTable(tbKhachhang) == false) {
-            JOptionPane.showMessageDialog(null, "Lấy dữ liệu khách hàng có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-        }
+//        if (DatabaseManager.KhachhangToTable(tbKhachhang) == false) {
+//            JOptionPane.showMessageDialog(null, "Lấy dữ liệu khách hàng có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
+//        }
 
     }
 
@@ -422,72 +419,72 @@ public class Employee extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int selectedRow = tbKhachhang.getSelectedRow();
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(null, "Bạn chưa chọn khách hàng nào để xóa", "Chưa chọn khách hàng", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-        int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa khách hàng này không", "Xoá khách hàng?",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (result == JOptionPane.CANCEL_OPTION) {
-            return;
-        }
-        String makh = (String) tbKhachhang.getValueAt(selectedRow, 0);
-        if (DatabaseManager.Count("Hoadon", "makh", makh) > 0) {
-            JOptionPane.showMessageDialog(null, "Đã có khách hàng trong hoá đơn này!", "Không thể xóa", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (DatabaseManager.XoaKhachhang(makh)) {
-            btnAdd.requestFocus();
-            SwitchMode(ChucNang.NONE);
-            ReloadTaleKhachhang();
-            JOptionPane.showMessageDialog(null, "Xóa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        } else {
-            JOptionPane.showMessageDialog(null, "Xóa thất bại", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+//        int selectedRow = tbKhachhang.getSelectedRow();
+//        if (selectedRow < 0) {
+//            JOptionPane.showMessageDialog(null, "Bạn chưa chọn khách hàng nào để xóa", "Chưa chọn khách hàng", JOptionPane.INFORMATION_MESSAGE);
+//            return;
+//        }
+//        int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa khách hàng này không", "Xoá khách hàng?",
+//                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+//        if (result == JOptionPane.CANCEL_OPTION) {
+//            return;
+//        }
+//        String makh = (String) tbKhachhang.getValueAt(selectedRow, 0);
+//        if (DatabaseManager.Count("Hoadon", "makh", makh) > 0) {
+//            JOptionPane.showMessageDialog(null, "Đã có khách hàng trong hoá đơn này!", "Không thể xóa", JOptionPane.WARNING_MESSAGE);
+//            return;
+//        }
+//        if (DatabaseManager.XoaKhachhang(makh)) {
+//            btnAdd.requestFocus();
+//            SwitchMode(ChucNang.NONE);
+//            ReloadTaleKhachhang();
+//            JOptionPane.showMessageDialog(null, "Xóa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+//            return;
+//        } else {
+//            JOptionPane.showMessageDialog(null, "Xóa thất bại", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
+//            return;
+//        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        String makh = txtUserName.getText().trim();
-        String tenkh = txtPassword.getText().trim();
-        String sdt = txtPhone.getText().trim();
-        if (chucNangDaChon == ChucNang.ADD) {
-            if (CheckInput() == false) {
-                return;
-            }
-            if (DatabaseManager.Count("Khachhang", "makh", makh) > 0) {
-                txtUserName.requestFocus();
-                JOptionPane.showMessageDialog(null, "Mã Khách hàng bạn nhập đã tồn tại trong csdl", "Trùng mã", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            if (DatabaseManager.ThemKhachhang(makh, tenkh, sdt)) {
-                btnAdd.requestFocus();
-                SwitchMode(ChucNang.NONE);
-                ReloadTaleKhachhang();
-                JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            } else {
-                JOptionPane.showMessageDialog(null, "Thêm thất bại", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-        if (chucNangDaChon == ChucNang.UPDATE) {
-            if (CheckInput() == false) {
-                return;
-            }
-            if (DatabaseManager.SuaKhachhang(makh, tenkh, sdt)) {
-                btnUpdate.requestFocus();
-                SwitchMode(ChucNang.NONE);
-                ReloadTaleKhachhang();
-                JOptionPane.showMessageDialog(null, "Sửa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            } else {
-                JObtnDisplayshowMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
+//        String makh = txtUserName.getText().trim();
+//        String tenkh = txtPassword.getText().trim();
+//        String sdt = txtPhone.getText().trim();
+//        if (chucNangDaChon == ChucNang.ADD) {
+//            if (CheckInput() == false) {
+//                return;
+//            }
+//            if (DatabaseManager.Count("Khachhang", "makh", makh) > 0) {
+//                txtUserName.requestFocus();
+//                JOptionPane.showMessageDialog(null, "Mã Khách hàng bạn nhập đã tồn tại trong csdl", "Trùng mã", JOptionPane.WARNING_MESSAGE);
+//                return;
+//            }
+//            if (DatabaseManager.ThemKhachhang(makh, tenkh, sdt)) {
+//                btnAdd.requestFocus();
+//                SwitchMode(ChucNang.NONE);
+//                ReloadTaleKhachhang();
+//                JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+//                return;
+//            } else {
+//                JOptionPane.showMessageDialog(null, "Thêm thất bại", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+//        }
+//        if (chucNangDaChon == ChucNang.UPDATE) {
+//            if (CheckInput() == false) {
+//                return;
+//            }
+//            if (DatabaseManager.SuaKhachhang(makh, tenkh, sdt)) {
+//                btnUpdate.requestFocus();
+//                SwitchMode(ChucNang.NONE);
+//                ReloadTaleKhachhang();
+//                JOptionPane.showMessageDialog(null, "Sửa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+//                return;
+//            } else {
+//                JObtnDisplayshowMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
+//        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed

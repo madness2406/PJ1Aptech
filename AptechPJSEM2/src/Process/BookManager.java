@@ -47,7 +47,14 @@ public class BookManager {
                 + " Where BookId = '" + id + "'";
         return dbConn.UpdateData(sql);
     }
-
+    
+    public static boolean Edit(String quantity, String id) {
+        DBConnection dbConn = new DBConnection();
+        String sql = "Update book Set Quantity = N'" + quantity + "'"
+                + " Where BookId = '" + id + "'";
+        return dbConn.UpdateData(sql);
+    }
+    
     public static boolean Delete1(String bookId) {
         String sql = "Delete From book Where BookId = '" + bookId + "'";
         DBConnection dbConn = new DBConnection();

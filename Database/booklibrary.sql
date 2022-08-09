@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 08, 2022 at 11:12 AM
+-- Generation Time: Aug 09, 2022 at 08:02 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -71,9 +71,9 @@ CREATE TABLE `book` (
 --
 
 INSERT INTO `book` (`BookId`, `Name`, `Author`, `CategoryId`, `PublishYear`, `Quantity`, `Price`, `CreatedTime`, `CreatorId`, `ModifiedTime`, `ChangerId`, `Note`) VALUES
-(1, 'Test edit', 'Conan', 1, 1, 7, '10000', '2022-08-03 15:31:20', 0, '2022-08-08 09:51:23', NULL, ''),
+(1, 'Test edit', 'Conan', 1, 1, 13, '10000', '2022-08-03 15:31:20', 0, '2022-08-08 09:51:23', NULL, ''),
 (2, 'Conan', 'Conan', 1, 1, 10, '10000', '2022-08-03 15:36:11', 0, '2022-08-08 09:41:55', NULL, ''),
-(3, 'Conan', 'Conan', 1, 1, 10, '10000', '2022-08-03 15:47:42', 0, '2022-08-08 09:41:55', NULL, ''),
+(3, 'Conan', 'Conan', 1, 1, 13, '10000', '2022-08-03 15:47:42', 0, '2022-08-08 09:41:55', NULL, ''),
 (6, 'test edit lan 2', 'test', 1, 1, 10, '10000', '2022-08-08 15:20:18', 1, '2022-08-08 15:21:49', 1, '');
 
 -- --------------------------------------------------------
@@ -88,6 +88,7 @@ CREATE TABLE `booking` (
   `LenderId` int(11) NOT NULL,
   `DateOfRent` date NOT NULL DEFAULT current_timestamp(),
   `ExpiredDay` date NOT NULL,
+  `ReturnDate` date DEFAULT NULL,
   `Status` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_vietnamese_ci NOT NULL DEFAULT 'Mượn',
   `Deposit` float DEFAULT NULL,
   `TotalMoney` float DEFAULT NULL,
@@ -98,8 +99,8 @@ CREATE TABLE `booking` (
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`BookingId`, `RenderId`, `LenderId`, `DateOfRent`, `ExpiredDay`, `Status`, `Deposit`, `TotalMoney`, `Note`) VALUES
-(3, 1, 1, '2022-08-08', '2022-02-02', 'Mượn', 10000, 30000, NULL);
+INSERT INTO `booking` (`BookingId`, `RenderId`, `LenderId`, `DateOfRent`, `ExpiredDay`, `ReturnDate`, `Status`, `Deposit`, `TotalMoney`, `Note`) VALUES
+(3, 1, 1, '2022-08-08', '2022-02-02', '2022-08-10', 'Trả', 10000, 30000, NULL);
 
 -- --------------------------------------------------------
 

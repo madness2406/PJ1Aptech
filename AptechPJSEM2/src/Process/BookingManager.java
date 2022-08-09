@@ -7,8 +7,9 @@ package Process;
 import Database.DBConnection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import javax.swing.DefaultComboBoxModel;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -35,10 +36,17 @@ public class BookingManager {
 
     }
 
-    public static boolean Edit(String renderId, String day, String status, String note) {
+    public static boolean Edit(String renderId, String day, String note) {
         DBConnection dbConn = new DBConnection();
         String sql = "Update booking Set RenderId = N'" + renderId + "', ExpiredDay = N'"
-                + day + "', Status = N'" + status + "', Note = N'" + note + "')";
+                + day + "', Note = N'" + note + "'";
+        return dbConn.UpdateData(sql);
+    }
+    
+    public static boolean Edit(String status, String returnDate) {
+        DBConnection dbConn = new DBConnection();
+        String sql = "Update booking Set Status = N'" + status + "', ReturnDate = N'"
+                + returnDate + "'";
         return dbConn.UpdateData(sql);
     }
 
@@ -59,19 +67,38 @@ public class BookingManager {
                 row[0] = rs.getString(1);
                 row[1] = rs.getString(2);
                 row[2] = rs.getString(3);
-                row[3] = rs.getString(5);
-                row[4] = rs.getString(4);
+                row[3] = rs.getString(4);
+                row[4] = rs.getString(5);
                 row[5] = rs.getString(6);
                 row[6] = rs.getString(7);
+                row[7] = rs.getString(8);
                 dfTableModel.addRow(row);
             }
             return true;
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             return false;
         }
     }
-
+    public static boolean BookBookingToList(String bookingId, ArrayList arrayList) {
+        try {
+            DBConnection db = new DBConnection();
+            ResultSet rs = db.GetData("Select bkd.BookId,bkd.Quantity,b.Quantity From bookingdetail bkd "
+                                    + "Inner Join book b On bkd.BookId = b.BookId "
+                                    + "Where bkd.BookBookingId = N'" + bookingId + "'");
+            while (rs.next()) {
+                String[] row = new String[3];
+                row[0] = rs.getString(1);
+                row[1] = rs.getString(2);
+                row[2] = rs.getString(3);
+                arrayList.add(row);
+            }
+            return true;
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            return false;
+        }
+    }
     public static int Count(String tableName, String columnName1, String value1, String coloumnName2, String value2) {
         String sql;
         if (value1.length() == 0 && columnName1.length() == 0
@@ -89,7 +116,7 @@ public class BookingManager {
                 int count = Integer.parseInt(rs.getString(1));
                 return count;
             }
-        } catch (Exception ex) {
+        } catch (NumberFormatException | SQLException ex) {
             java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             return 0;
         }
@@ -111,7 +138,7 @@ public class BookingManager {
                 int count = Integer.parseInt(rs.getString(1));
                 return count;
             }
-        } catch (Exception ex) {
+        } catch (NumberFormatException | SQLException ex) {
             java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             return 0;
         }
@@ -127,7 +154,7 @@ public class BookingManager {
             if (rs.next()) {
                 return rs.getString(1);
             }
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             return "0.0";
         }
@@ -136,5 +163,21 @@ public class BookingManager {
 
     public static String TotalDeposits(Float money, int interest) {
         return String.valueOf(money * interest / 100);
+    }
+    
+    public static String GetData(String table, String columnDisplay, String columnConstraint, String value) {
+        try {
+            String dm = null;
+            DBConnection dbConn = new DBConnection();
+            String qr = "Select " + columnDisplay + " From " + table + " Where " + columnConstraint + " = N'" + value + "'";
+            ResultSet rs = dbConn.GetData(qr);
+            if (rs.next()) {
+                dm = rs.getString(columnDisplay);
+            }
+            return dm;
+        } catch (SQLException ex) {
+            Logger.getLogger(BookingDetailManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

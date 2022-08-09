@@ -1,21 +1,23 @@
 package InterfaceItem;
 
 import Process.ChucNang;
-import Process.DatabaseManager;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Interface.MainMenu;
+import Process.BookManager;
 import Process.BookingManager;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import javax.swing.JDesktopPane;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 /**
  *
  * @author Admin
  */
 public class Booking extends javax.swing.JInternalFrame {
+
     private final JDesktopPane DesktopPane1;
     private final String employeeId;
     DefaultTableModel dfTableModel;
@@ -23,6 +25,7 @@ public class Booking extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form QuanLyHoaDon
+     *
      * @param employeeId
      * @param DesktopPane1
      */
@@ -43,16 +46,18 @@ public class Booking extends javax.swing.JInternalFrame {
             String id = (String) dfTableModel.getValueAt(row, 0);
             String renderId = (String) dfTableModel.getValueAt(row, 1);
             String expriedDay = (String) dfTableModel.getValueAt(row, 4);
-            String status = (String) dfTableModel.getValueAt(row, 5);
-            String deposit = (String) dfTableModel.getValueAt(row, 6);
+            String status = (String) dfTableModel.getValueAt(row, 6);
+            String deposit = (String) dfTableModel.getValueAt(row, 7);
+            String totalPrice = BookingManager.TotalMoney(id);
             
             txtId.setText(id);
             txtRenderId.setText(renderId.trim());
             cbStatus.setSelectedItem(status.trim());
             txtExpiredDay.setText(expriedDay.trim());
             txtDeposit.setText(deposit.trim());
+            txtTotalPrice.setText(totalPrice);
         } else {
-
+            txtTotalPrice.setText("");
             txtExpiredDay.setText("");
             txtRenderId.setText("");
             cbStatus.setSelectedItem("");
@@ -75,6 +80,22 @@ public class Booking extends javax.swing.JInternalFrame {
         lblIndexTblBooking.setText((rowSelected + 1) + "/" + totalRow);
     }
 
+    void ReturnQuantityToBook(String bookingId) {
+        ArrayList<String[]> arr = new ArrayList();
+        if (BookingManager.BookBookingToList(bookingId, arr)) {
+            for (int i = 0; i < arr.size(); i++) {
+                QuantityToBook(arr.get(i)[0], arr.get(i)[2], arr.get(i)[1]);
+            }
+        }
+    }
+
+    void QuantityToBook(String bookId, String bookQuantity, String quantity){
+        int _bookQuantity = Integer.parseInt(bookQuantity);
+        int _quantity = Integer.parseInt(quantity);
+        int sum = _bookQuantity + _quantity;
+        BookManager.Edit(""+sum, bookId);
+    }
+    
     void SwitchMode(int chucNang) {
         chucNangDaChon = chucNang;
         switch (chucNang) {
@@ -96,8 +117,10 @@ public class Booking extends javax.swing.JInternalFrame {
             }
             case ChucNang.UPDATE: {
                 boolean trangThai = true;
+                txtRenderId.setEnabled(trangThai);
+                txtExpiredDay.setEnabled(trangThai);
+                cbStatus.setEnabled(false);
                 txtNote.setEnabled(trangThai);
-                cbStatus.setEnabled(trangThai);
                 btnSave.setEnabled(trangThai);
                 btnAdd.setEnabled(!trangThai);
                 btnDelete.setEnabled(!trangThai);
@@ -108,8 +131,8 @@ public class Booking extends javax.swing.JInternalFrame {
                 boolean trangThai = false;
                 txtRenderId.setEnabled(trangThai);
                 txtExpiredDay.setEnabled(trangThai);
-                cbStatus.setEnabled(trangThai);
                 txtNote.setEnabled(trangThai);
+                cbStatus.setEnabled(true);
                 txtTotalPrice.setEnabled(trangThai);
                 btnSave.setEnabled(trangThai);
                 btnAdd.setEnabled(true);
@@ -187,6 +210,7 @@ public class Booking extends javax.swing.JInternalFrame {
         txtNote = new javax.swing.JTextArea();
         jLabel9 = new javax.swing.JLabel();
         btnDetail = new javax.swing.JButton();
+        btnChangeTracking = new javax.swing.JButton();
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -227,17 +251,17 @@ public class Booking extends javax.swing.JInternalFrame {
         tbBooking.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         tbBooking.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Hóa đơn số", "Người mượn", "Thủ thư", "Ngày mượn", "Ngày hẹn trả", "Trạng thái", "Tiền cọc"
+                "Id", "Người mượn", "Thủ thư", "Ngày mượn", "Ngày hẹn trả", "Ngày trả", "Trạng thái", "Tiền cọc"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, true, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -245,6 +269,14 @@ public class Booking extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane2.setViewportView(tbBooking);
+        if (tbBooking.getColumnModel().getColumnCount() > 0) {
+            tbBooking.getColumnModel().getColumn(0).setMinWidth(50);
+            tbBooking.getColumnModel().getColumn(0).setMaxWidth(50);
+            tbBooking.getColumnModel().getColumn(1).setMinWidth(100);
+            tbBooking.getColumnModel().getColumn(1).setMaxWidth(100);
+            tbBooking.getColumnModel().getColumn(2).setMinWidth(100);
+            tbBooking.getColumnModel().getColumn(2).setMaxWidth(100);
+        }
 
         btnLast.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnLast.setText(">|");
@@ -259,8 +291,6 @@ public class Booking extends javax.swing.JInternalFrame {
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel6.setText("Trạng thái");
-
-        cbStatus.setEnabled(false);
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setText("Danh sách");
@@ -306,7 +336,7 @@ public class Booking extends javax.swing.JInternalFrame {
         });
 
         btnUpdate.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnUpdate.setText("Cập nhật");
+        btnUpdate.setText("Sửa thông tin");
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
@@ -371,6 +401,14 @@ public class Booking extends javax.swing.JInternalFrame {
         btnDetail.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDetailActionPerformed(evt);
+            }
+        });
+
+        btnChangeTracking.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnChangeTracking.setText("Trả / Hủy");
+        btnChangeTracking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangeTrackingActionPerformed(evt);
             }
         });
 
@@ -439,8 +477,10 @@ public class Booking extends javax.swing.JInternalFrame {
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addGap(61, 61, 61)
                                         .addComponent(jLabel9)
-                                        .addGap(252, 252, 252)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 161, Short.MAX_VALUE)
+                                        .addGap(252, 252, 252)))
+                                .addGap(14, 14, 14)
+                                .addComponent(btnChangeTracking, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -486,7 +526,8 @@ public class Booking extends javax.swing.JInternalFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel6)
+                            .addComponent(btnChangeTracking))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
@@ -557,10 +598,10 @@ public class Booking extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
+        exit();
         MainMenu fmain = new MainMenu(employeeId);
         this.setVisible(false);
         fmain.setLocationRelativeTo(null);
-
     }//GEN-LAST:event_btnReturnActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
@@ -577,16 +618,16 @@ public class Booking extends javax.swing.JInternalFrame {
         String renderId = txtRenderId.getText().trim();
         String day = txtExpiredDay.getText().trim();
         String status = cbStatus.getSelectedItem().toString();
-        String totalPrice = txtTotalPrice.getText().toString();
-        if(totalPrice.length() == 0)
+        String totalPrice = txtTotalPrice.getText().trim();
+        if (totalPrice.length() == 0) {
             totalPrice = "0.0";
-        String deposit = txtDeposit.getText().trim();
+        }
         String note = txtNote.getText().trim();
         if (chucNangDaChon == ChucNang.ADD) {
             if (CheckInput() == false) {
                 return;
             }
-            if (BookingManager.Count("student", "Id", renderId) == 0){
+            if (BookingManager.Count("student", "Id", renderId) == 0) {
                 txtRenderId.requestFocus();
                 JOptionPane.showMessageDialog(null, "Người mượn không tồn tại", "Lỗi", JOptionPane.WARNING_MESSAGE);
                 return;
@@ -611,23 +652,19 @@ public class Booking extends javax.swing.JInternalFrame {
             if (CheckInput() == false) {
                 return;
             }
-            if (BookingManager.Edit(renderId, day, status, note)) {
+            if (BookingManager.Edit(renderId, day, note)) {
                 btnUpdate.requestFocus();
                 SwitchMode(ChucNang.NONE);
                 ReloadTaleHD();
                 JOptionPane.showMessageDialog(null, "Sửa thành công",
                         "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                return;
             } else {
                 JOptionPane.showMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
-                return;
             }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        String hdSo = txtRenderId.getText().trim();
-        txtTotalPrice.setText(DatabaseManager.triGia(hdSo).toString());
         if (tbBooking.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null, "Chưa chọn hóa đơn để sửa",
                     "Chưa chọn hóa đơn", JOptionPane.WARNING_MESSAGE);
@@ -658,10 +695,8 @@ public class Booking extends javax.swing.JInternalFrame {
             ReloadTaleHD();
             JOptionPane.showMessageDialog(null, "Xóa thành công",
                     "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            return;
         } else {
             JOptionPane.showMessageDialog(null, "Xóa thất bại", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-            return;
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -679,7 +714,7 @@ public class Booking extends javax.swing.JInternalFrame {
 
     private void txtTotalPriceKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalPriceKeyReleased
         String totalPrice = txtTotalPrice.getText().trim();
-        if(totalPrice.equals("0.0"))
+        if (totalPrice.equals("0.0"))
             txtDeposit.setText("0.0");
         else
             txtDeposit.setText(BookingManager.TotalDeposits(Float.parseFloat(totalPrice), 30));
@@ -687,7 +722,7 @@ public class Booking extends javax.swing.JInternalFrame {
 
     private void txtIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdKeyReleased
         String id = txtId.getText().trim();
-        if(id.length() > 0)
+        if (id.length() > 0)
             txtTotalPrice.setText(BookingManager.TotalMoney(id));
         else
             txtTotalPrice.setText("0.0");
@@ -695,22 +730,51 @@ public class Booking extends javax.swing.JInternalFrame {
 
     private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
         // TODO add your handling code here:
-            String bookingId = txtId.getText().trim();
-//        if (bookingId.length() == 0) {
-//            JOptionPane.showMessageDialog(null, "Vui lòng chọn hóa đơn", "Chưa chọn hóa đơn", JOptionPane.WARNING_MESSAGE);
-//            tbBooking.requestFocus();
-//        } else {
+        String bookingId = txtId.getText().trim();
+        if (bookingId.length() == 0) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn hóa đơn", "Chưa chọn hóa đơn", JOptionPane.WARNING_MESSAGE);
+            tbBooking.requestFocus();
+        } else {
             BookingDetail bookingDetail = new BookingDetail(bookingId);
             DesktopPane1.add(bookingDetail);
             this.setVisible(false);
             bookingDetail.setVisible(true);
-//        }
+        }
     }//GEN-LAST:event_btnDetailActionPerformed
+
+    private void btnChangeTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeTrackingActionPerformed
+        // TODO add your handling code here:
+        String id = txtId.getText().trim();
+        String status = cbStatus.getSelectedItem().toString().trim();
+        String statusDb = BookingManager.GetData("booking", "Status", "BookingId", id);
+        
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+        LocalDateTime now = LocalDateTime.now(); 
+        if (id.length() == 0) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn hóa đơn", "Chưa chọn hóa đơn", JOptionPane.WARNING_MESSAGE);
+            tbBooking.requestFocus();
+        } else {
+            if((status.equals("Trả")||status.equals("Hủy")) && statusDb.equals("Mượn")){
+                if (BookingManager.Edit(status, dtf.format(now))) {
+                    ReturnQuantityToBook(id);
+                    ReloadTaleHD();
+                    JOptionPane.showMessageDialog(null, "Sửa thành công",
+                            "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Không thể dùng lại hóa đơn cũ", "Sửa thất bại", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnChangeTrackingActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnChangeTracking;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDetail;
     private javax.swing.JButton btnFirst;

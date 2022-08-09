@@ -91,20 +91,23 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             txtBookPrice.setText("");
             txtTotalPrice.setText("");
         }
+        ReloadLblIndexTblBookingDetail();
     }
     //Lấy dữ liệu cho bảng
 
     void ReloadTableBookingDetail() {
         if (BookingDetailManager.BookingDetailToTable(tblBookingDetailList, bookingId) == false) {
             JOptionPane.showMessageDialog(null, "Lấy dữ liệu chi tiết có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-            ReloadLblIndexTblBookingDetail();
         }
+        ReloadLblIndexTblBookingDetail();
     }
 
     void LoadBookTable() {
         if (BookingDetailManager.BookToTable(tbBook) == false) {
             JOptionPane.showMessageDialog(null, "Lấy dữ liệu chi tiết có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
         }
+        int totalRow = tbBook.getRowCount();
+        lblTotalBook.setText("Tổng cuốn sách: "+totalRow);
     }
 
     void LoadSearchingBookTable(String constraint) {
@@ -225,6 +228,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
         txtBookQuantity = new javax.swing.JTextField();
         txtBookPrice = new javax.swing.JTextField();
         txtTotalPrice = new javax.swing.JTextField();
+        lblTotalBook = new javax.swing.JLabel();
 
         btnReturn.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnReturn.setText("Quay lại");
@@ -431,7 +435,8 @@ public class BookingDetail extends javax.swing.JInternalFrame {
                         .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTotalBook))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -501,7 +506,9 @@ public class BookingDetail extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnSearch))
-                        .addGap(18, 18, 18)
+                        .addGap(14, 14, 14)
+                        .addComponent(lblTotalBook)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -691,11 +698,11 @@ public class BookingDetail extends javax.swing.JInternalFrame {
         String bookId = (String) tblBookingDetailList.getValueAt(selectedRow, 0);
         if (BookingDetailManager.Delete(bookingId, bookId, quantity, bookQuantity)) {
             String _totalMoney = BookingDetailManager.TotalValue("SUM(Money)", "bookingdetail", "BookBookingId", bookingId);
-                float deposit = Math.round(Float.parseFloat(_totalMoney) / 1000 / 3) * 1000;
-                String _deposit = String.valueOf(deposit);
-                if (BookingDetailManager.UpdateToBooking(bookingId, "Deposit", _deposit, "TotalMoney", _totalMoney)) {
-                    btnAdd.requestFocus();
-                }
+            float deposit = Math.round(Float.parseFloat(_totalMoney) / 1000 / 3) * 1000;
+            String _deposit = String.valueOf(deposit);
+            if (BookingDetailManager.UpdateToBooking(bookingId, "Deposit", _deposit, "TotalMoney", _totalMoney)) {
+                btnAdd.requestFocus();
+            }
             SwitchMode(ChucNang.NONE);
             ReloadTableBookingDetail();
             JOptionPane.showMessageDialog(null, "Xóa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
@@ -754,6 +761,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblIndexTblBookingDetail;
+    private javax.swing.JLabel lblTotalBook;
     private javax.swing.JTable tbBook;
     private javax.swing.JTable tblBookingDetailList;
     private javax.swing.JTextField txtAuthor;
