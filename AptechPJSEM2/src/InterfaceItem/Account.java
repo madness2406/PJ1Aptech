@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.lang.String;
 import Process.DatabaseManager;
 import java.sql.SQLException;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -126,26 +127,42 @@ public class Account extends javax.swing.JInternalFrame {
         String email = txtEmail.getText().trim();
         String phoneNo = txtPhone.getText().trim();
         
+        Pattern p = Pattern.compile("^[0-9]+$");
+        Pattern p2 = Pattern.compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+        
         if (name.length() == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng nhập tên đăng nhập", "Chưa nhập tên đăng nhập",
                     JOptionPane.WARNING_MESSAGE);
             txtUserName.requestFocus();
             return false;
         }
+        
         if (password.length() == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng nhập mật khẩu", "Chưa nhập mật khẩu",
                     JOptionPane.WARNING_MESSAGE);
             txtPassword.requestFocus();
             return false;
         }
+        
         if (email.length() == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng nhập email", "Chưa nhập email",
                     JOptionPane.WARNING_MESSAGE);
             txtEmail.requestFocus();
             return false;
+        }else if(!p2.matcher(email).find()){
+            JOptionPane.showMessageDialog(null, "Email không hợp lệ", "email không hợp lệ",
+                    JOptionPane.WARNING_MESSAGE);
+            txtEmail.requestFocus();
+            return false;
         }
+        
         if (phoneNo.length() == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng nhập số điện thoại", "Chưa nhập số điện thoại",
+                    JOptionPane.WARNING_MESSAGE);
+            txtPhone.requestFocus();
+            return false;
+        }else if(!p.matcher(phoneNo).find()){
+            JOptionPane.showMessageDialog(null, "Vui lòng chỉ nhập số", "Số điện thoại không hợp lệ",
                     JOptionPane.WARNING_MESSAGE);
             txtPhone.requestFocus();
             return false;
