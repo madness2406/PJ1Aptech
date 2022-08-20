@@ -9,7 +9,6 @@ import Process.ChucNang;
 import Process.BookManager;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
 import java.time.*;
@@ -28,6 +27,7 @@ public class Book extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form HangHoa1
+     * @param employeeId
      * @throws java.sql.SQLException
      */
     public Book(String employeeId) throws SQLException {
