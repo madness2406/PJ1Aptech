@@ -4,15 +4,10 @@
  * and open the template in the editor.
  */
 package InterfaceItem;
-import Interface.MainMenu;
 import Process.*;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.lang.String;
-import Process.DatabaseManager;
-import java.sql.SQLException;
 import java.util.regex.Pattern;
 
 /**
@@ -26,24 +21,33 @@ public class Account extends javax.swing.JInternalFrame {
 
     public Account() {
         initComponents();
-         dfTableModel = (DefaultTableModel) tbNhanVien.getModel();
+        dfTableModel = (DefaultTableModel) tbNhanVien.getModel();
+        retrieve();
     }
     
-    private void retrieve() throws SQLException {      
+    public final void retrieve(){      
         txtId.setVisible(false);        
     }
 
-    void tbNhanVien_SelectionChanged() {
+    void tbEmployee_SelectionChanged() {
         int row = tbNhanVien.getSelectedRow();
         if (row >= 0) {            
-            String userName = (String) dfTableModel.getValueAt(row, 0);
-            String email = (String) dfTableModel.getValueAt(row, 1);
-            String phoneNo = (String) dfTableModel.getValueAt(row, 2);  
-            String nhanvienId = (String) dfTableModel.getValueAt(row, 3); 
+            String nhanvienId = (String) dfTableModel.getValueAt(row, 0); 
+            String userName = (String) dfTableModel.getValueAt(row, 1);
+            String email = (String) dfTableModel.getValueAt(row, 2);
+            String phoneNo = (String) dfTableModel.getValueAt(row, 3);  
             
             txtUserName.setText(userName.trim());
-            txtEmail.setText(email.trim());
-            txtPhone.setText(phoneNo.trim());  
+            if(email != null)
+                txtEmail.setText(email.trim());
+            else
+                txtEmail.setText("");
+                
+            if(phoneNo != null)
+                txtPhone.setText(phoneNo.trim());  
+            else
+                txtPhone.setText("");  
+                
             txtId.setText(nhanvienId);
         } else {
             txtUserName.setText("");
@@ -56,7 +60,7 @@ public class Account extends javax.swing.JInternalFrame {
     }
 
     void ReloadTableNhanVien() {
-        if (DatabaseManager.KhachhangToTable(tbNhanVien) == false) {
+        if (EmployeeManager.AccountToTable(tbNhanVien) == false) {
             JOptionPane.showMessageDialog(null, "Lấy dữ liệu khách hàng có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -65,7 +69,7 @@ public class Account extends javax.swing.JInternalFrame {
     void ReloadLblIndexTBNhanVien() {
         int rowSelected = tbNhanVien.getSelectedRow();
         int totalRow = tbNhanVien.getRowCount();
-        lblIndexTblKhachhang.setText((rowSelected + 1) + "/" + totalRow);
+        lblIndexTblEmployee.setText((rowSelected + 1) + "/" + totalRow);
     }
 
     void SwitchMode(int chucNang) {
@@ -92,12 +96,11 @@ public class Account extends javax.swing.JInternalFrame {
             }
             case ChucNang.UPDATE: {
                 boolean trangThai = true;
-                txtUserName.setEnabled(trangThai);
                 txtPassword.setEnabled(trangThai);
                 txtEmail.setEnabled(trangThai);
                 txtPhone.setEnabled(trangThai);
                
-                txtUserName.requestFocus();
+                txtEmail.requestFocus();
                 btnSave.setEnabled(trangThai);
                 btnAdd.setEnabled(!trangThai);
                 btnDelete.setEnabled(!trangThai);
@@ -183,14 +186,13 @@ public class Account extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         btnLast = new javax.swing.JButton();
-        lblIndexTblKhachhang = new javax.swing.JLabel();
+        lblIndexTblEmployee = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         btnFirst = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtUserName = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JTextField();
         btnEdit = new javax.swing.JButton();
         txtPhone = new javax.swing.JTextField();
         btnDelete = new javax.swing.JButton();
@@ -205,6 +207,7 @@ public class Account extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
         txtId = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
 
         btnLast.setText(">|");
         btnLast.addActionListener(new java.awt.event.ActionListener() {
@@ -213,7 +216,7 @@ public class Account extends javax.swing.JInternalFrame {
             }
         });
 
-        lblIndexTblKhachhang.setText("0/0");
+        lblIndexTblEmployee.setText("0/0");
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jLabel2.setText("Tên đăng nhập");
@@ -236,9 +239,6 @@ public class Account extends javax.swing.JInternalFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Thông tin nhân viên");
-
-        txtPassword.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        txtPassword.setEnabled(false);
 
         btnEdit.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         btnEdit.setText("Sửa");
@@ -305,7 +305,7 @@ public class Account extends javax.swing.JInternalFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Tên đăng nhập", "Email", "SĐT", "Id"
+                "Id", "Tên đăng nhập", "Email", "SĐT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -318,11 +318,13 @@ public class Account extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tbNhanVien);
         if (tbNhanVien.getColumnModel().getColumnCount() > 0) {
-            tbNhanVien.getColumnModel().getColumn(0).setMinWidth(150);
-            tbNhanVien.getColumnModel().getColumn(0).setMaxWidth(150);
-            tbNhanVien.getColumnModel().getColumn(1).setMinWidth(200);
-            tbNhanVien.getColumnModel().getColumn(1).setMaxWidth(200);
-            tbNhanVien.getColumnModel().getColumn(2).setResizable(false);
+            tbNhanVien.getColumnModel().getColumn(0).setMinWidth(50);
+            tbNhanVien.getColumnModel().getColumn(0).setMaxWidth(50);
+            tbNhanVien.getColumnModel().getColumn(1).setMinWidth(100);
+            tbNhanVien.getColumnModel().getColumn(1).setMaxWidth(100);
+            tbNhanVien.getColumnModel().getColumn(2).setMinWidth(200);
+            tbNhanVien.getColumnModel().getColumn(2).setMaxWidth(200);
+            tbNhanVien.getColumnModel().getColumn(3).setResizable(false);
         }
 
         btnDisplay.setText("Hiển thị");
@@ -338,6 +340,8 @@ public class Account extends javax.swing.JInternalFrame {
         txtEmail.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         txtEmail.setEnabled(false);
 
+        txtPassword.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -352,7 +356,7 @@ public class Account extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBack)
                         .addGap(20, 20, 20)
-                        .addComponent(lblIndexTblKhachhang)
+                        .addComponent(lblIndexTblEmployee)
                         .addGap(18, 18, 18)
                         .addComponent(btnNext)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -379,9 +383,9 @@ public class Account extends javax.swing.JInternalFrame {
                                             .addComponent(jLabel5))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(txtUserName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
-                                            .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE))))
+                                            .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                                            .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING))))
                                 .addGap(37, 37, 37)))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAdd)
@@ -411,7 +415,7 @@ public class Account extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(11, 11, 11)
+                        .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
                             .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -428,13 +432,13 @@ public class Account extends javax.swing.JInternalFrame {
                         .addComponent(btnEdit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDelete)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnFirst)
                     .addComponent(btnNext)
                     .addComponent(btnBack)
                     .addComponent(btnLast)
-                    .addComponent(lblIndexTblKhachhang)
+                    .addComponent(lblIndexTblEmployee)
                     .addComponent(btnDisplay)
                     .addComponent(btnReturn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -473,7 +477,7 @@ public class Account extends javax.swing.JInternalFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         int selectedRow = tbNhanVien.getSelectedRow();
-        String nhanvienId = (String) tbNhanVien.getValueAt(selectedRow, 3);
+        String nhanvienId = (String) tbNhanVien.getValueAt(selectedRow, 0);
         
         if (selectedRow < 0) {
             JOptionPane.showMessageDialog(null, "Bạn chưa chọn nhân viên nào để xóa", "Chưa chọn nhân viên", JOptionPane.INFORMATION_MESSAGE);
@@ -575,7 +579,7 @@ public class Account extends javax.swing.JInternalFrame {
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
          tbNhanVien.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-            tbNhanVien_SelectionChanged();
+            tbEmployee_SelectionChanged();
         });
         ReloadTableNhanVien();
             
@@ -599,11 +603,11 @@ public class Account extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblIndexTblKhachhang;
+    private javax.swing.JLabel lblIndexTblEmployee;
     private javax.swing.JTable tbNhanVien;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtId;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtPhone;
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables

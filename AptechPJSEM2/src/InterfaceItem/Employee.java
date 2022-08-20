@@ -4,13 +4,11 @@
  * and open the template in the editor.
  */
 package InterfaceItem;
-import Interface.MainMenu;
 import Process.*;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.lang.String;
 import Process.DatabaseManager;
 
 /**
@@ -24,11 +22,11 @@ public class Employee extends javax.swing.JInternalFrame {
 
     public Employee() {
         initComponents();
-         dfTableModel = (DefaultTableModel) tbKhachhang.getModel();
+         dfTableModel = (DefaultTableModel) tbEmployee.getModel();
     }
 
-    void TblDSKhachHang_SelectionChanged() {
-        int row = tbKhachhang.getSelectedRow();
+    void TblEmployee_SelectionChanged() {
+        int row = tbEmployee.getSelectedRow();
         if (row >= 0) {
             String makh = (String) dfTableModel.getValueAt(row, 0);
             String tenkh = (String) dfTableModel.getValueAt(row, 1);
@@ -42,19 +40,19 @@ public class Employee extends javax.swing.JInternalFrame {
             txtPassword.setText("");
             txtPhone.setText("");
         }
-        ReloadLblIndexTBKhachhang();
+        ReloadLblIndexTBEmployee();
     }
 
-    void ReloadTaleKhachhang() {
-        if (DatabaseManager.KhachhangToTable(tbKhachhang) == false) {
-            JOptionPane.showMessageDialog(null, "Lấy dữ liệu khách hàng có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
+    void ReloadTaleEmployee() {
+        if (EmployeeManager.AccountToTable(tbEmployee) == false) {
+            JOptionPane.showMessageDialog(null, "Lấy dữ liệu nhân viên có lỗi", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
         }
 
     }
 
-    void ReloadLblIndexTBKhachhang() {
-        int rowSelected = tbKhachhang.getSelectedRow();
-        int totalRow = tbKhachhang.getRowCount();
+    void ReloadLblIndexTBEmployee() {
+        int rowSelected = tbEmployee.getSelectedRow();
+        int totalRow = tbEmployee.getRowCount();
         lblIndexTblKhachhang.setText((rowSelected + 1) + "/" + totalRow);
     }
 
@@ -145,7 +143,6 @@ public class Employee extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         txtUserName = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JTextField();
         btnUpdate = new javax.swing.JButton();
         txtPhone = new javax.swing.JTextField();
         btnDelete = new javax.swing.JButton();
@@ -155,10 +152,11 @@ public class Employee extends javax.swing.JInternalFrame {
         btnAdd = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tbKhachhang = new javax.swing.JTable();
+        tbEmployee = new javax.swing.JTable();
         btnDisplay = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
 
         btnLast.setText(">|");
         btnLast.addActionListener(new java.awt.event.ActionListener() {
@@ -190,9 +188,6 @@ public class Employee extends javax.swing.JInternalFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Thông tin nhân viên");
-
-        txtPassword.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        txtPassword.setEnabled(false);
 
         btnUpdate.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         btnUpdate.setText("Sửa");
@@ -250,8 +245,8 @@ public class Employee extends javax.swing.JInternalFrame {
             }
         });
 
-        tbKhachhang.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        tbKhachhang.setModel(new javax.swing.table.DefaultTableModel(
+        tbEmployee.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tbEmployee.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -270,13 +265,13 @@ public class Employee extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tbKhachhang);
-        if (tbKhachhang.getColumnModel().getColumnCount() > 0) {
-            tbKhachhang.getColumnModel().getColumn(0).setMinWidth(150);
-            tbKhachhang.getColumnModel().getColumn(0).setMaxWidth(150);
-            tbKhachhang.getColumnModel().getColumn(1).setMinWidth(200);
-            tbKhachhang.getColumnModel().getColumn(1).setMaxWidth(200);
-            tbKhachhang.getColumnModel().getColumn(2).setResizable(false);
+        jScrollPane1.setViewportView(tbEmployee);
+        if (tbEmployee.getColumnModel().getColumnCount() > 0) {
+            tbEmployee.getColumnModel().getColumn(0).setMinWidth(150);
+            tbEmployee.getColumnModel().getColumn(0).setMaxWidth(150);
+            tbEmployee.getColumnModel().getColumn(1).setMinWidth(200);
+            tbEmployee.getColumnModel().getColumn(1).setMaxWidth(200);
+            tbEmployee.getColumnModel().getColumn(2).setResizable(false);
         }
 
         btnDisplay.setText("Hiển thị");
@@ -291,6 +286,13 @@ public class Employee extends javax.swing.JInternalFrame {
 
         txtEmail.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         txtEmail.setEnabled(false);
+
+        txtPassword.setEnabled(false);
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -331,9 +333,9 @@ public class Employee extends javax.swing.JInternalFrame {
                                         .addComponent(jLabel5))
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(txtUserName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
-                                        .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE))))
+                                        .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                                        .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING))))
                             .addGap(37, 37, 37))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAdd)
@@ -361,7 +363,7 @@ public class Employee extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(11, 11, 11)
+                        .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
                             .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -378,7 +380,7 @@ public class Employee extends javax.swing.JInternalFrame {
                         .addComponent(btnUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDelete)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnFirst)
                     .addComponent(btnNext)
@@ -396,22 +398,22 @@ public class Employee extends javax.swing.JInternalFrame {
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
         // TODO add your handling code here:
-        if (tbKhachhang.getRowCount() > 0) {
-            int lastRowIndex = tbKhachhang.getRowCount() - 1;
-            tbKhachhang.getSelectionModel().setSelectionInterval(lastRowIndex,
+        if (tbEmployee.getRowCount() > 0) {
+            int lastRowIndex = tbEmployee.getRowCount() - 1;
+            tbEmployee.getSelectionModel().setSelectionInterval(lastRowIndex,
                     lastRowIndex);
         }
     }//GEN-LAST:event_btnLastActionPerformed
 
     private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
         // TODO add your handling code here:
-        if (tbKhachhang.getRowCount() > 0) {
-            tbKhachhang.getSelectionModel().setSelectionInterval(0, 0);
+        if (tbEmployee.getRowCount() > 0) {
+            tbEmployee.getSelectionModel().setSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_btnFirstActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        if (tbKhachhang.getSelectedRow() == -1) {
+        if (tbEmployee.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(null, "Chưa chọn khách hàng để sửa", "Chưa chọn khách hàng", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -422,7 +424,7 @@ public class Employee extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int selectedRow = tbKhachhang.getSelectedRow();
+        int selectedRow = tbEmployee.getSelectedRow();
         if (selectedRow < 0) {
             JOptionPane.showMessageDialog(null, "Bạn chưa chọn khách hàng nào để xóa", "Chưa chọn khách hàng", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -432,7 +434,7 @@ public class Employee extends javax.swing.JInternalFrame {
         if (result == JOptionPane.CANCEL_OPTION) {
             return;
         }
-        String makh = (String) tbKhachhang.getValueAt(selectedRow, 0);
+        String makh = (String) tbEmployee.getValueAt(selectedRow, 0);
         if (DatabaseManager.Count("Hoadon", "makh", makh) > 0) {
             JOptionPane.showMessageDialog(null, "Đã có khách hàng trong hoá đơn này!", "Không thể xóa", JOptionPane.WARNING_MESSAGE);
             return;
@@ -440,12 +442,10 @@ public class Employee extends javax.swing.JInternalFrame {
         if (DatabaseManager.XoaKhachhang(makh)) {
             btnAdd.requestFocus();
             SwitchMode(ChucNang.NONE);
-            ReloadTaleKhachhang();
+            ReloadTaleEmployee();
             JOptionPane.showMessageDialog(null, "Xóa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-            return;
         } else {
             JOptionPane.showMessageDialog(null, "Xóa thất bại", "Có lỗi xảy ra", JOptionPane.ERROR_MESSAGE);
-            return;
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -465,7 +465,7 @@ public class Employee extends javax.swing.JInternalFrame {
             if (DatabaseManager.ThemKhachhang(makh, tenkh, sdt)) {
                 btnAdd.requestFocus();
                 SwitchMode(ChucNang.NONE);
-                ReloadTaleKhachhang();
+                ReloadTaleEmployee();
                 JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 return;
             } else {
@@ -480,12 +480,10 @@ public class Employee extends javax.swing.JInternalFrame {
             if (DatabaseManager.SuaKhachhang(makh, tenkh, sdt)) {
                 btnUpdate.requestFocus();
                 SwitchMode(ChucNang.NONE);
-                ReloadTaleKhachhang();
+                ReloadTaleEmployee();
                 JOptionPane.showMessageDialog(null, "Sửa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                return;
             } else {
                 JObtnDisplayshowMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
-                return;
             }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -497,10 +495,10 @@ public class Employee extends javax.swing.JInternalFrame {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        int rowSelected = tbKhachhang.getSelectedRow();
+        int rowSelected = tbEmployee.getSelectedRow();
         if (rowSelected > 0) {
             rowSelected--;
-            tbKhachhang.getSelectionModel().setSelectionInterval(rowSelected,
+            tbEmployee.getSelectionModel().setSelectionInterval(rowSelected,
                     rowSelected);
         }
     }//GEN-LAST:event_btnBackActionPerformed
@@ -515,23 +513,27 @@ public class Employee extends javax.swing.JInternalFrame {
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
-        int rowSelected = tbKhachhang.getSelectedRow();
-        if (rowSelected < tbKhachhang.getRowCount() - 1) {
+        int rowSelected = tbEmployee.getSelectedRow();
+        if (rowSelected < tbEmployee.getRowCount() - 1) {
             rowSelected++;
-            tbKhachhang.getSelectionModel().setSelectionInterval(rowSelected,
+            tbEmployee.getSelectionModel().setSelectionInterval(rowSelected,
                     rowSelected);
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
-        tbKhachhang.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        tbEmployee.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                TblDSKhachHang_SelectionChanged();
+                TblEmployee_SelectionChanged();
             }
         });
-        ReloadTaleKhachhang();
+        ReloadTaleEmployee();
     }//GEN-LAST:event_btnDisplayActionPerformed
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPasswordActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -552,9 +554,9 @@ public class Employee extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblIndexTblKhachhang;
-    private javax.swing.JTable tbKhachhang;
+    private javax.swing.JTable tbEmployee;
     private javax.swing.JTextField txtEmail;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtPhone;
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables

@@ -22,7 +22,7 @@ public class EmployeeManager {
         String sql;        
             sql = "Insert into account (UserName, Password, Email, PhoneNo, Role)"
                     + " values (N'" + userName + "',N'" + password + "',N'"                    
-                    + email + "',N'" + phoneNo + "')";
+                    + email + "',N'" + phoneNo + "',1)";
        
         return dbconn.UpdateData(sql);
 
@@ -48,13 +48,13 @@ public class EmployeeManager {
             DefaultTableModel dfTableModel = (DefaultTableModel) jTable.getModel();
             dfTableModel.setRowCount(0);
             DBConnection db = new DBConnection();
-            ResultSet rs = db.GetData("Select UserName, Email, PhoneNo From account");
-            String[] row = new String[3];
+            ResultSet rs = db.GetData("Select AccountId, UserName, Email, PhoneNo From account");
+            String[] row = new String[4];
             while (rs.next()) {
-                row[0] = rs.getString(2);
-                row[1] = rs.getString(4);
-                row[2] = rs.getString(5);  
-                row[3] = rs.getString(1);
+                row[0] = rs.getString(1);
+                row[1] = rs.getString(2);
+                row[2] = rs.getString(3);  
+                row[3] = rs.getString(4);  
                 dfTableModel.addRow(row);
             }
             return true;
