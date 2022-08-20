@@ -5,6 +5,7 @@
  */
 package Interface;
 
+import InterfaceItem.Account;
 import InterfaceItem.Book;
 import InterfaceItem.Booking;
 import InterfaceItem.Employee;
@@ -140,7 +141,7 @@ public class MainMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CustomerActionPerformed
-        Employee employee = new Employee();
+        Account employee = new Account();
         DesktopPane1.add(employee);
         employee.setVisible(true);
     }//GEN-LAST:event_CustomerActionPerformed
