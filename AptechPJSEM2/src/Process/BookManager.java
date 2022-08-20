@@ -76,7 +76,7 @@ public class BookManager {
                 row[4] = rs.getString(4);
                 row[5] = rs.getString(6);
                 row[6] = rs.getString(7);
-                row[7] = rs.getString(12);
+                row[7] = rs.getString(10);
                 dfTableModel.addRow(row);
             }
             return true;
