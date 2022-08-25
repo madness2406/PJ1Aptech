@@ -122,7 +122,7 @@ public class BookingDetailManager {
             DBConnection db = new DBConnection();
             ResultSet rs;
             if (constraint.length() > 0) {
-                rs = db.GetData("Select BookId,Name,Author From book Where Name Like '%" + constraint + "%'");
+                rs = db.GetData("Select BookId,Name,Author From book Where (Name Like '%" + constraint + "%' Or Author Like '%" + constraint + "%')");
             } else {
                 rs = db.GetData("Select BookId,Name,Author From book");
             }
