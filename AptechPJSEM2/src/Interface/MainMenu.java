@@ -8,7 +8,10 @@ package Interface;
 import InterfaceItem.Account;
 import InterfaceItem.Book;
 import InterfaceItem.Booking;
+<<<<<<< HEAD
 import InterfaceItem.Category;
+=======
+>>>>>>> 9a4c6b3dd7116006c97fe58b16fa77d1e89a6302
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

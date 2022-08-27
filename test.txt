@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 test
 Làm thêm báo cáo thống kê
 thêm bộ lọc dữ liệu
+=======
+test
+>>>>>>> 9a4c6b3dd7116006c97fe58b16fa77d1e89a6302
