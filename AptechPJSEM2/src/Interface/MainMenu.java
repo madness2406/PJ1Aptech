@@ -8,6 +8,7 @@ package Interface;
 import InterfaceItem.Account;
 import InterfaceItem.Book;
 import InterfaceItem.Booking;
+import InterfaceItem.Student;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,9 @@ import javax.swing.JFrame;
  * @author Admin
  */
 public class MainMenu extends javax.swing.JFrame {
+
     private String employeeId;
+
     /**
      * Creates new form Menu
      */
@@ -147,7 +150,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void BookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingActionPerformed
         Booking bookingForm = null;
-        bookingForm = new Booking(employeeId,DesktopPane1);
+        bookingForm = new Booking(employeeId, DesktopPane1);
         DesktopPane1.add(bookingForm);
         bookingForm.setVisible(true);
     }//GEN-LAST:event_BookingActionPerformed
@@ -170,6 +173,9 @@ public class MainMenu extends javax.swing.JFrame {
 
     private void StudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentActionPerformed
         // TODO add your handling code here:
+        Student studentForm = new Student();
+        DesktopPane1.add(studentForm);
+        studentForm.setVisible(true);
     }//GEN-LAST:event_StudentActionPerformed
 
     /**

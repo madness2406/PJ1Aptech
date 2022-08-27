@@ -41,8 +41,16 @@ public class Book extends javax.swing.JInternalFrame {
         DefaultComboBoxModel dm = BookManager.GetCategoryId();
         txtId.setVisible(false);
         cbCategoryId.setModel(dm);
+        DisplayData();
     }
 
+    private void DisplayData(){
+        tbBook.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            TbHangHoa_SelectionChanged();
+        });
+        ReloadTableBook();
+    }
+    
     void TbHangHoa_SelectionChanged() {
         int row = tbBook.getSelectedRow();
         if (row >= 0) {
@@ -253,6 +261,10 @@ public class Book extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(tbBook);
+        if (tbBook.getColumnModel().getColumnCount() > 0) {
+            tbBook.getColumnModel().getColumn(0).setMinWidth(50);
+            tbBook.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
 
         txtName.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         txtName.setEnabled(false);
@@ -648,10 +660,7 @@ public class Book extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
-        tbBook.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-            TbHangHoa_SelectionChanged();
-        });
-        ReloadTableBook();
+        DisplayData();
     }//GEN-LAST:event_btnDisplayActionPerformed
 
 
