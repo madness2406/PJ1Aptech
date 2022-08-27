@@ -41,8 +41,16 @@ public class Book extends javax.swing.JInternalFrame {
         DefaultComboBoxModel dm = BookManager.GetCategoryId();
         txtId.setVisible(false);
         cbCategoryId.setModel(dm);
+        DisplayData();
     }
 
+    private void DisplayData(){
+        tbBook.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            TbHangHoa_SelectionChanged();
+        });
+        ReloadTableBook();
+    }
+    
     void TbHangHoa_SelectionChanged() {
         int row = tbBook.getSelectedRow();
         if (row >= 0) {
@@ -253,6 +261,10 @@ public class Book extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(tbBook);
+        if (tbBook.getColumnModel().getColumnCount() > 0) {
+            tbBook.getColumnModel().getColumn(0).setMinWidth(50);
+            tbBook.getColumnModel().getColumn(0).setMaxWidth(50);
+        }
 
         txtName.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         txtName.setEnabled(false);
@@ -431,9 +443,9 @@ public class Book extends javax.swing.JInternalFrame {
                                     .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addComponent(jLabel3)))
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(14, 14, 14)
+                            .addGap(17, 17, 17)
                             .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(173, 173, 173)
+                            .addGap(170, 170, 170)
                             .addComponent(jLabel1))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -460,9 +472,9 @@ public class Book extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
+                        .addGap(18, 18, 18)
                         .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25)
+                        .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnDisplay)
                             .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -648,10 +660,7 @@ public class Book extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
-        tbBook.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-            TbHangHoa_SelectionChanged();
-        });
-        ReloadTableBook();
+        DisplayData();
     }//GEN-LAST:event_btnDisplayActionPerformed
 
 

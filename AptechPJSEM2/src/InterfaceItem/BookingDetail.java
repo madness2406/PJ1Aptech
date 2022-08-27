@@ -37,11 +37,19 @@ public class BookingDetail extends javax.swing.JInternalFrame {
         tbmBookingDetail = (DefaultTableModel) tblBookingDetailList.getModel();
         tbmBook = (DefaultTableModel) tbBook.getModel();
         LoadBookTable();
+        DisplayData();
+    }
+
+    private void DisplayData(){
         tbBook.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             TblBook_SelectionChanged();
         });
+        tblBookingDetailList.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            TblBookingDetail_SelectionChanged();
+        });
+        ReloadTableBookingDetail();
     }
-
+    
     void TblBook_SelectionChanged() {
         int row = tbBook.getSelectedRow();
         if (row >= 0) {
@@ -162,7 +170,12 @@ public class BookingDetail extends javax.swing.JInternalFrame {
             }
         }
     }
-
+    
+    private void ReloadTxtBookQuantity(String bookId){
+        String _quantity = BookingDetailManager.GetData("book", "Quantity", "BookId", bookId);
+        txtBookQuantity.setText(_quantity);
+    }
+    
     boolean CheckInput() {
         String bookId = txtBookId.getText().trim();
         String quantity = txtQuantity.getText().trim();
@@ -294,6 +307,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
 
         btnSave.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnSave.setText("Lưu");
+        btnSave.setEnabled(false);
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
@@ -403,6 +417,11 @@ public class BookingDetail extends javax.swing.JInternalFrame {
         }
 
         txtSearch.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
 
         btnSearch.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnSearch.setText("Tìm kiếm");
@@ -640,6 +659,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
                     btnAdd.requestFocus();
                 }
                 SwitchMode(ChucNang.NONE);
+                ReloadTxtBookQuantity(bookId);
                 ReloadTableBookingDetail();
                 JOptionPane.showMessageDialog(null, "Thêm thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 return;
@@ -712,10 +732,7 @@ public class BookingDetail extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayActionPerformed
-        tblBookingDetailList.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
-            TblBookingDetail_SelectionChanged();
-        });
-        ReloadTableBookingDetail();
+        DisplayData();
     }//GEN-LAST:event_btnDisplayActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
@@ -736,6 +753,10 @@ public class BookingDetail extends javax.swing.JInternalFrame {
         int price = Integer.parseInt(txtBookPrice.getText().trim());
         txtTotalPrice.setText("" + (quantity * price));
     }//GEN-LAST:event_txtQuantityKeyReleased
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

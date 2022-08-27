@@ -80,6 +80,80 @@ public class BookingManager {
             return false;
         }
     }
+    
+    public static boolean SearchBookingToTable(JTable jTable, String constraint) {
+        try {
+            DefaultTableModel dfTableModel = (DefaultTableModel) jTable.getModel();
+            dfTableModel.setRowCount(0);
+            DBConnection db = new DBConnection();
+            ResultSet rs;
+            if (constraint.length() > 0) {
+                rs = db.GetData("Select BookingId,RenderId,LenderId,DateOfRent,ExpiredDay,ReturnDate,Status,Deposit "
+                        + "From booking Where ("
+                        + "BookingId Like '%" + constraint + "%' Or "
+                        + "RenderId Like '%" + constraint + "%' Or "
+                        + "LenderId Like '%" + constraint + "%' Or "
+                        + "DateOfRent Like '%" + constraint + "%' Or "
+                        + "ExpiredDay Like '%" + constraint + "%' Or "
+                        + "ReturnDate Like '%" + constraint + "%' Or "
+                        + "Status Like '%" + constraint + "%' Or "
+                        + "Deposit Like '%" + constraint + "%')");
+            } else {
+                rs = db.GetData("Select BookingId,RenderId,LenderId,DateOfRent,ExpiredDay,ReturnDate,Status,Deposit From booking");
+            }
+            String[] row = new String[8];
+            while (rs.next()) {
+                row[0] = rs.getString(1);
+                row[1] = rs.getString(2);
+                row[2] = rs.getString(3);
+                row[3] = rs.getString(4);
+                row[4] = rs.getString(5);
+                row[5] = rs.getString(6);
+                row[6] = rs.getString(7);
+                row[7] = rs.getString(8);
+
+                dfTableModel.addRow(row);
+            }
+            return dfTableModel.getRowCount() > 0;
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+    
+    public static boolean FilterBookingToTable(JTable jTable, String constraint1, String constraint2, String column) {
+        try {
+            DefaultTableModel dfTableModel = (DefaultTableModel) jTable.getModel();
+            dfTableModel.setRowCount(0);
+            DBConnection db = new DBConnection();
+            ResultSet rs = null;
+            if (constraint1.length() > 0 && constraint2.length() > 0 && !column.equals("")) {
+                rs = db.GetData("Select BookingId,RenderId,LenderId,DateOfRent,ExpiredDay,ReturnDate,Status,Deposit "
+                        + "From booking Where ("
+                        + column + " Between '" + constraint1 + "' And '" + constraint2 + "')");
+            } else if(column.equals("") || constraint1.length() == 0 || constraint2.length() == 0) {
+                rs = db.GetData("Select BookingId,RenderId,LenderId,DateOfRent,ExpiredDay,ReturnDate,Status,Deposit From booking");
+            }
+            String[] row = new String[8];
+            while (rs.next()) {
+                row[0] = rs.getString(1);
+                row[1] = rs.getString(2);
+                row[2] = rs.getString(3);
+                row[3] = rs.getString(4);
+                row[4] = rs.getString(5);
+                row[5] = rs.getString(6);
+                row[6] = rs.getString(7);
+                row[7] = rs.getString(8);
+
+                dfTableModel.addRow(row);
+            }
+            return dfTableModel.getRowCount() > 0;
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DBConnection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+    
     public static boolean BookBookingToList(String bookingId, ArrayList arrayList) {
         try {
             DBConnection db = new DBConnection();
