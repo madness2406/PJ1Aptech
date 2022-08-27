@@ -681,9 +681,6 @@ public class Booking extends javax.swing.JInternalFrame {
 
     private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
         exit();
-        MainMenu fmain = new MainMenu(employeeId);
-        this.setVisible(false);
-        fmain.setLocationRelativeTo(null);
     }//GEN-LAST:event_btnReturnActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 09, 2022 at 08:02 PM
+-- Generation Time: Aug 27, 2022 at 11:00 AM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `booklibrary`
 --
-CREATE DATABASE IF NOT EXISTS `booklibrary` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `booklibrary`;
 
 -- --------------------------------------------------------
 
@@ -43,7 +41,8 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`AccountId`, `UserName`, `Password`, `Email`, `PhoneNo`, `Role`) VALUES
-(1, 'admin', 'admin', NULL, NULL, 0);
+(1, 'admin', 'admin', NULL, NULL, 0),
+(2, 'tuantest', 'aaa', 'tuandb24061@gmail.com', '1234567890', 1);
 
 -- --------------------------------------------------------
 
@@ -72,7 +71,7 @@ CREATE TABLE `book` (
 
 INSERT INTO `book` (`BookId`, `Name`, `Author`, `CategoryId`, `PublishYear`, `Quantity`, `Price`, `CreatedTime`, `CreatorId`, `ModifiedTime`, `ChangerId`, `Note`) VALUES
 (1, 'Test edit', 'Conan', 1, 1, 13, '10000', '2022-08-03 15:31:20', 0, '2022-08-08 09:51:23', NULL, ''),
-(2, 'Conan', 'Conan', 1, 1, 10, '10000', '2022-08-03 15:36:11', 0, '2022-08-08 09:41:55', NULL, ''),
+(2, 'Conan', 'Conan', 1, 1000, 10, '10000', '2022-08-03 15:36:11', 0, '2022-08-20 18:29:13', 1, ''),
 (3, 'Conan', 'Conan', 1, 1, 13, '10000', '2022-08-03 15:47:42', 0, '2022-08-08 09:41:55', NULL, ''),
 (6, 'test edit lan 2', 'test', 1, 1, 10, '10000', '2022-08-08 15:20:18', 1, '2022-08-08 15:21:49', 1, '');
 
@@ -100,7 +99,8 @@ CREATE TABLE `booking` (
 --
 
 INSERT INTO `booking` (`BookingId`, `RenderId`, `LenderId`, `DateOfRent`, `ExpiredDay`, `ReturnDate`, `Status`, `Deposit`, `TotalMoney`, `Note`) VALUES
-(3, 1, 1, '2022-08-08', '2022-02-02', '2022-08-10', 'Trả', 10000, 30000, NULL);
+(3, 1, 1, '2022-08-08', '2022-02-02', '2022-08-25', 'Trả', 10000, 30000, NULL),
+(4, 1, 1, '2022-08-25', '2022-12-22', '2022-08-25', 'Trả', 37000, 110000, NULL);
 
 -- --------------------------------------------------------
 
@@ -121,7 +121,9 @@ CREATE TABLE `bookingdetail` (
 
 INSERT INTO `bookingdetail` (`BookBookingId`, `BookId`, `Quantity`, `Money`) VALUES
 (3, 1, 2, 20000),
-(3, 3, 1, 10000);
+(3, 3, 1, 10000),
+(4, 1, 1, 10000),
+(4, 3, 10, 100000);
 
 -- --------------------------------------------------------
 
@@ -133,7 +135,9 @@ CREATE TABLE `category` (
   `CategoryId` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
   `CreatedTime` datetime NOT NULL DEFAULT current_timestamp(),
+  `CreatorId` int(11) DEFAULT NULL,
   `ModifyTime` datetime DEFAULT NULL,
+  `ChangerId` int(11) DEFAULT NULL,
   `Description` varchar(1000) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -141,8 +145,9 @@ CREATE TABLE `category` (
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`CategoryId`, `Name`, `CreatedTime`, `ModifyTime`, `Description`) VALUES
-(1, 'Trinh tham', '2022-08-03 15:10:35', NULL, NULL);
+INSERT INTO `category` (`CategoryId`, `Name`, `CreatedTime`, `CreatorId`, `ModifyTime`, `ChangerId`, `Description`) VALUES
+(1, 'Trinh tham', '2022-08-03 15:10:35', NULL, NULL, NULL, NULL),
+(2, 'test edit category', '2022-08-27 15:36:17', 1, '2022-08-27 15:44:24', 1, '');
 
 -- --------------------------------------------------------
 
@@ -218,7 +223,7 @@ ALTER TABLE `student`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `AccountId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `AccountId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `book`
@@ -230,13 +235,13 @@ ALTER TABLE `book`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `BookingId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `BookingId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `CategoryId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `CategoryId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `student`

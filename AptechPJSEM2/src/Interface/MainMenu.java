@@ -8,25 +8,36 @@ package Interface;
 import InterfaceItem.Account;
 import InterfaceItem.Book;
 import InterfaceItem.Booking;
+import InterfaceItem.Category;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 
 /**
  *
  * @author Admin
  */
 public class MainMenu extends javax.swing.JFrame {
-    private String employeeId;
+    private final String employeeId;
+    private final String role;
     /**
      * Creates new form Menu
+     * @param employeeId
+     * @param role
      */
-    public MainMenu(String employeeId) {
+    public MainMenu(String employeeId,String role) {
         this.employeeId = employeeId;
+        this.role = role;
         initComponents();
+        retrieve();
     }
 
+    private void retrieve(){
+        if(role.equals("0"))
+            menuEmployee.setVisible(true);
+        else
+            menuEmployee.setVisible(false);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -41,11 +52,13 @@ public class MainMenu extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         mniExit = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        Customer = new javax.swing.JMenuItem();
+        menuManagement = new javax.swing.JMenu();
         Student = new javax.swing.JMenuItem();
         Book = new javax.swing.JMenuItem();
         Booking = new javax.swing.JMenuItem();
+        Category = new javax.swing.JMenuItem();
+        menuEmployee = new javax.swing.JMenu();
+        Customer = new javax.swing.JMenuItem();
 
         jMenuItem3.setText("jMenuItem3");
 
@@ -77,16 +90,7 @@ public class MainMenu extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Chức năng");
-
-        Customer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        Customer.setText("Thông tin nhân viên");
-        Customer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CustomerActionPerformed(evt);
-            }
-        });
-        jMenu2.add(Customer);
+        menuManagement.setText("Chức năng");
 
         Student.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         Student.setText("Thông tin sinh viên");
@@ -95,7 +99,7 @@ public class MainMenu extends javax.swing.JFrame {
                 StudentActionPerformed(evt);
             }
         });
-        jMenu2.add(Student);
+        menuManagement.add(Student);
 
         Book.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         Book.setText("Nhập sách");
@@ -104,7 +108,7 @@ public class MainMenu extends javax.swing.JFrame {
                 createBookActionPerformed(evt);
             }
         });
-        jMenu2.add(Book);
+        menuManagement.add(Book);
 
         Booking.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_DOWN_MASK));
         Booking.setText("Mượn - Trả sách");
@@ -113,9 +117,31 @@ public class MainMenu extends javax.swing.JFrame {
                 BookingActionPerformed(evt);
             }
         });
-        jMenu2.add(Booking);
+        menuManagement.add(Booking);
 
-        jMenuBar1.add(jMenu2);
+        Category.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        Category.setText("Thể loại sách");
+        Category.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CategoryActionPerformed(evt);
+            }
+        });
+        menuManagement.add(Category);
+
+        jMenuBar1.add(menuManagement);
+
+        menuEmployee.setText("Quản lý nhân viên");
+
+        Customer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        Customer.setText("Thông tin nhân viên");
+        Customer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CustomerActionPerformed(evt);
+            }
+        });
+        menuEmployee.add(Customer);
+
+        jMenuBar1.add(menuEmployee);
 
         setJMenuBar(jMenuBar1);
 
@@ -146,8 +172,7 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_CustomerActionPerformed
 
     private void BookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BookingActionPerformed
-        Booking bookingForm = null;
-        bookingForm = new Booking(employeeId,DesktopPane1);
+        Booking bookingForm = new Booking(employeeId,DesktopPane1);
         DesktopPane1.add(bookingForm);
         bookingForm.setVisible(true);
     }//GEN-LAST:event_BookingActionPerformed
@@ -171,6 +196,13 @@ public class MainMenu extends javax.swing.JFrame {
     private void StudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_StudentActionPerformed
+
+    private void CategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CategoryActionPerformed
+        // TODO add your handling code here:
+        Category categoryForm = new Category(employeeId);
+        DesktopPane1.add(categoryForm);
+        categoryForm.setVisible(true);
+    }//GEN-LAST:event_CategoryActionPerformed
 
     /**
      * @param args the command line arguments
@@ -201,25 +233,21 @@ public class MainMenu extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                MainMenu mainMenu = new MainMenu("1");
-                mainMenu.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                mainMenu.setVisible(true);
-            }
-        });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Book;
     private javax.swing.JMenuItem Booking;
+    private javax.swing.JMenuItem Category;
     private javax.swing.JMenuItem Customer;
     private javax.swing.JDesktopPane DesktopPane1;
     private javax.swing.JMenuItem Student;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenu menuEmployee;
+    private javax.swing.JMenu menuManagement;
     private javax.swing.JMenuItem mniExit;
     // End of variables declaration//GEN-END:variables
 }
