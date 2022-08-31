@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 27, 2022 at 11:00 AM
+-- Generation Time: Aug 31, 2022 at 05:42 AM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `booklibrary`
 --
+CREATE DATABASE IF NOT EXISTS `booklibrary` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `booklibrary`;
 
 -- --------------------------------------------------------
 
@@ -41,8 +43,9 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`AccountId`, `UserName`, `Password`, `Email`, `PhoneNo`, `Role`) VALUES
-(1, 'admin', 'admin', NULL, NULL, 0),
-(2, 'tuantest', 'aaa', 'tuandb24061@gmail.com', '1234567890', 1);
+(1, 'admin', 'd033e22ae348aeb5660fc2140aec35850c4da997', NULL, NULL, 0),
+(2, 'tuantest', '7e240de74fb1ed08fa08d38063f6a6a91462a815', 'tuandb2406@gmail.com', '1234567890', 1),
+(3, 'tuantestsha', '7e240de74fb1ed08fa08d38063f6a6a91462a815', 'tuantest@gmail.com', '0123456789', 1);
 
 -- --------------------------------------------------------
 
@@ -159,7 +162,7 @@ CREATE TABLE `student` (
   `Id` int(11) NOT NULL,
   `Name` varchar(50) NOT NULL,
   `Gender` varchar(5) NOT NULL,
-  `DOB` date NOT NULL,
+  `DOB` datetime NOT NULL,
   `POB` varchar(15) NOT NULL,
   `PhoneNo` varchar(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -169,7 +172,9 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`Id`, `Name`, `Gender`, `DOB`, `POB`, `PhoneNo`) VALUES
-(1, 'Test', 'Nam', '2022-08-05', 'Test', '');
+(1, 'Test', 'Nam', '2022-08-05 00:00:00', 'Test', ''),
+(2, 'adas', 'asd', '2022-02-02 00:00:00', 'hn', '1234142'),
+(3, 'adas', 'asd', '2022-02-02 00:00:00', 'hn', '1234142');
 
 --
 -- Indexes for dumped tables
@@ -223,7 +228,7 @@ ALTER TABLE `student`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `AccountId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `AccountId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `book`
@@ -247,7 +252,7 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `student`
 --
 ALTER TABLE `student`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
