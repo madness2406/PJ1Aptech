@@ -5,6 +5,8 @@
 package Interface;
 
 import Process.LoginManager;
+import Hashing.SHAHashing;
+import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -32,12 +34,19 @@ public class Login extends javax.swing.JFrame {
         txtPass = new javax.swing.JPasswordField();
         btnLogin = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
+        chkShow = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Username");
 
         jLabel2.setText("Password");
+
+        txtPass.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPassKeyPressed(evt);
+            }
+        });
 
         btnLogin.setText("Login");
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
@@ -47,6 +56,18 @@ public class Login extends javax.swing.JFrame {
         });
 
         btnExit.setText("Exit");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
+        });
+
+        chkShow.setText("Show/Hide Password");
+        chkShow.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chkShowItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -67,7 +88,10 @@ public class Login extends javax.swing.JFrame {
                         .addGap(124, 124, 124)
                         .addComponent(btnLogin)
                         .addGap(96, 96, 96)
-                        .addComponent(btnExit)))
+                        .addComponent(btnExit))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(141, 141, 141)
+                        .addComponent(chkShow)))
                 .addContainerGap(139, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -81,7 +105,9 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(65, 65, 65)
+                .addGap(18, 18, 18)
+                .addComponent(chkShow)
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLogin)
                     .addComponent(btnExit))
@@ -91,13 +117,14 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+    void login(){
         String userName = txtUserName.getText().trim();
         String pass = txtPass.getText().trim();
+        String passToSHA = SHAHashing.getSHAHash(pass);
         
-        if(LoginManager.CheckLogin("account", "UserName", userName, "Password", pass)){
-            String userId = LoginManager.GetData("account", "AccountId", "UserName", userName, "Password", pass);
-            String role = LoginManager.GetData("account", "Role", "UserName", userName, "Password", pass);
+        if(LoginManager.CheckLogin("account", "UserName", userName, "Password", passToSHA)){
+            String userId = LoginManager.GetData("account", "AccountId", "UserName", userName, "Password", passToSHA);
+            String role = LoginManager.GetData("account", "Role", "UserName", userName, "Password", passToSHA);
             MainMenu menu = new MainMenu(userId,role);
             menu.setExtendedState(JFrame.MAXIMIZED_BOTH);
             menu.setVisible(true);
@@ -106,7 +133,42 @@ public class Login extends javax.swing.JFrame {
         else{
             JOptionPane.showMessageDialog(null, "Sai tài khoản hoặc mật khẩu", "Không tìm thấy", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        login();
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    void exit() {
+        int result = JOptionPane.showConfirmDialog(null, "Bạn có muốn thoát không?", "Thoát ?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.CANCEL_OPTION) {
+            return;
+        }
+        Login loginForm = new Login();
+        loginForm.setVisible(true);
+        System.exit(0);
+    }
+    
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        // TODO add your handling code here:
+        exit();
+    }//GEN-LAST:event_btnExitActionPerformed
+
+    private void chkShowItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chkShowItemStateChanged
+        // TODO add your handling code here:
+        if(chkShow.isSelected()){
+            txtPass.setEchoChar((char )0);
+        }
+        else
+            txtPass.setEchoChar('*');
+    }//GEN-LAST:event_chkShowItemStateChanged
+
+    private void txtPassKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPassKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            login();
+        }
+    }//GEN-LAST:event_txtPassKeyPressed
 
     /**
      * @param args the command line arguments
@@ -144,6 +206,7 @@ public class Login extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnLogin;
+    private javax.swing.JCheckBox chkShow;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPasswordField txtPass;

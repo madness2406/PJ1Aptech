@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package InterfaceItem;
+import Hashing.SHAHashing;
 import Process.*;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
@@ -507,6 +508,8 @@ public class Account extends javax.swing.JInternalFrame {
         String phoneNo = txtPhone.getText().trim();
         String nhanvienId = txtId.getText().trim();
         
+        String passToSHA = SHAHashing.getSHAHash(password);
+        
         if (chucNangDaChon == ChucNang.ADD) {
             if (CheckInput() == false) {
                 return;
@@ -516,7 +519,7 @@ public class Account extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Tên đăng nhập đã được sử dụng", "Trùng tên đăng nhập", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if (EmployeeManager.Add(username, password, email, phoneNo)) {
+            if (EmployeeManager.Add(username, passToSHA, email, phoneNo)) {
                 btnAdd.requestFocus();
                 SwitchMode(ChucNang.NONE);
                 ReloadTableNhanVien();
@@ -531,14 +534,14 @@ public class Account extends javax.swing.JInternalFrame {
             if (CheckInput() == false) {
                 return;
             }
-            if (EmployeeManager.Edit(nhanvienId, username, password, email, phoneNo)) {
+            if (EmployeeManager.Edit(nhanvienId, username, passToSHA, email, phoneNo)) {
                 btnEdit.requestFocus();
                 SwitchMode(ChucNang.NONE);
                 ReloadTableNhanVien();
                 JOptionPane.showMessageDialog(null, "Sửa thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 
             } else {
-                JObtnDisplayshowMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Sửa thất bại", "Có lỗi ", JOptionPane.ERROR_MESSAGE);
                 
             }
         }
@@ -612,7 +615,4 @@ public class Account extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables
 
-    private void JObtnDisplayshowMessageDialog(Object object, String sửa_thất_bại, String có_lỗi_, int ERROR_MESSAGE) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

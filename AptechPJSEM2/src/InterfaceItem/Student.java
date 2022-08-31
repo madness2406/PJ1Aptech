@@ -276,7 +276,6 @@ public class Student extends javax.swing.JInternalFrame {
 //                JOptionPane.showMessageDialog(null, "Người mượn chưa hoàn thành lần mượn trước", "Lỗi", JOptionPane.WARNING_MESSAGE);
 //                return;
 //            }
-            System.out.println(StudentManager.Add(name, gender, dob, pob, phoneNo));
             if (StudentManager.Add(name, gender, dob, pob, phoneNo)) {
                 btnSave.requestFocus();
                 SwitchMode(ChucNang.NONE);

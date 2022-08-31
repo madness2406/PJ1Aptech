@@ -43,6 +43,10 @@
                       <EmptySpace min="-2" pref="96" max="-2" attributes="0"/>
                       <Component id="btnExit" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="141" max="-2" attributes="0"/>
+                      <Component id="chkShow" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace pref="139" max="32767" attributes="0"/>
           </Group>
@@ -61,7 +65,9 @@
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtPass" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="chkShow" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnLogin" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnExit" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -85,6 +91,9 @@
     <Component class="javax.swing.JTextField" name="txtUserName">
     </Component>
     <Component class="javax.swing.JPasswordField" name="txtPass">
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtPassKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnLogin">
       <Properties>
@@ -98,6 +107,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Exit"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExitActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkShow">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show/Hide Password"/>
+      </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="chkShowItemStateChanged"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
